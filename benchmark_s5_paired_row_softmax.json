@@ -1,0 +1,54 @@
+{
+  "method": "paired_interleaved_full_forward_backward_optimizer_wall_time",
+  "candidate": "row_softmax",
+  "config": {
+    "candidate": "row_softmax",
+    "batch_size": 8,
+    "points": 4096,
+    "proxies": 1024,
+    "width": 64,
+    "fine_k": 16,
+    "proxy_k": 16,
+    "support_k": 8,
+    "transport_iterations": 100,
+    "warmup_pairs": 2,
+    "measured_pairs": 8,
+    "maximum_ratio": 1.25,
+    "output": "benchmark_s5_paired_row_softmax.json"
+  },
+  "hard_seconds": [
+    0.30159859999548644,
+    0.48336999997263774,
+    0.47254360001534224,
+    0.426982999953907,
+    0.5233672999893315,
+    0.39793849998386577,
+    0.518964099988807,
+    0.40861990000121295
+  ],
+  "candidate_seconds": [
+    0.3419461000012234,
+    0.35655620001489297,
+    0.4994935000431724,
+    0.5162778000230901,
+    0.44973200000822544,
+    0.5558321999851614,
+    0.4583579999743961,
+    0.5605530999600887
+  ],
+  "paired_ratios": [
+    1.1337788040340397,
+    0.7376465234397597,
+    1.0570315628588667,
+    1.2091296376643157,
+    0.8593047368786566,
+    1.3967791505664755,
+    0.8832171627753864,
+    1.3718203640068063
+  ],
+  "hard_median_seconds": 0.4497632999846246,
+  "candidate_median_seconds": 0.47892575000878423,
+  "median_paired_latency_ratio": 1.095405183446453,
+  "maximum_ratio": 1.25,
+  "passed": true
+}

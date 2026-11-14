@@ -1,0 +1,11 @@
+\section{Related Work}
+\label{sec:related_work}
+
+\subsection{Deep Learning on 3D Point Clouds}
+Pioneering architectures such as PointNet \cite{qi2017pointnet} and PointNet++ \cite{qi2017pointnetplusplus} established permutation-invariant feature extraction via symmetric functions and hierarchical ball querying. Subsequent developments integrated graph convolutions and continuous convolutions to capture local neighborhood topology. Nevertheless, fixed geometric kernels often struggle to generalize over irregular architectural shapes where local point densities exhibit substantial spatial variability.
+
+\subsection{Point Cloud Transformers and Attention Mechanisms}
+The success of Transformers in natural language and 2D vision motivated point-wise attention models such as Point Transformer and PCT \cite{guo2021pct}. Standard point transformers typically stack multiple attention layers with latent dimensions $d_{model} \ge 256$, which demand significant computational memory during backward propagation. In contrast to generic 3D shape datasets like ModelNet40, architectural point clouds exhibit pronounced vertical hierarchies and multi-scale decorative elements, rendering dense attention stacks prone to gradient explosion and memory exhaustion on portable hardware.
+
+\subsection{Architectural Benchmark: BuildingNet}
+BuildingNet \cite{buildingnet2021} provides a comprehensive 3D benchmark containing thousands of building models with rich semantic annotations. Unlike synthetic CAD objects, BuildingNet samples possess realistic structural complexities, multi-scale facades, and long-tail class distributions, demanding cost-sensitive training strategies and robust geometric feature encoders.

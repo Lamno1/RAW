@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0",
+  "mutation_type": "post_pilot_confirmatory_selection",
+  "stage": "S7",
+  "created_utc": "2026-09-26T06:30:23Z",
+  "state": "FROZEN_BEFORE_CONFIRMATORY_METRICS",
+  "preregistration": {
+    "path": "protocol/mutations/s7_global_proxy_preregistration.json",
+    "sha256": "9885cef986d8039863b4b8cdc8ece225ca53c8d8659a055fc9b2760563527064"
+  },
+  "pilot_design": {
+    "seed": 42,
+    "epochs": 5,
+    "selection_metric": "maximum fixed-crop validation Part-IoU over the five pilot epochs",
+    "tie_tolerance": 0.0001,
+    "tie_order": ["identity", "unweighted_mha", "mass_aware_mha"],
+    "test_split_used": false
+  },
+  "pilot_results": {
+    "identity": {
+      "validation_part_iou_by_epoch": [0.03859047321836843, 0.05292971358834334, 0.06394074078173109, 0.07578631324570885, 0.07524299354457128],
+      "best_epoch": 4,
+      "best_part_iou": 0.07578631324570885,
+      "best_accuracy": 0.5030518851847128,
+      "peak_allocated_mib": 946.06640625,
+      "metrics_sha256": "4514f7a3975f4578eba92a115be9753169c6b3f07f3355fab6d9ee119294e4d2",
+      "best_checkpoint_sha256": "c5a157581d4b284135427c0774e22641d652e07d702677421bcb479bd53aae95",
+      "status_sha256": "6e19b01c653a8b089664b18dda20d09ca76041b0ddfdb97a1bf5ffdf5d51903e"
+    },
+    "unweighted_mha": {
+      "validation_part_iou_by_epoch": [0.04463588110694228, 0.05942896953289735, 0.07128034642690595, 0.08795476294626503, 0.08666049856880034],
+      "best_epoch": 4,
+      "best_part_iou": 0.08795476294626503,
+      "best_accuracy": 0.5915868757436291,
+      "peak_allocated_mib": 946.453125,
+      "metrics_sha256": "b3bfa6094e7c7a4bc568bb1972937c6a8c4e16a6cfb430cdc0445e6fd32fcad4",
+      "best_checkpoint_sha256": "d7f01b112ade409c160efdf72afb4225e0f8a43204539542eeaef4d1e2c915c3",
+      "status_sha256": "4e1efd12316df8095041fd414b4e43061345ed44ad0b5e3f9facc838ea8e1377"
+    },
+    "mass_aware_mha": {
+      "validation_part_iou_by_epoch": [0.044726994848108555, 0.05963827955700694, 0.0710736083664628, 0.08846367146449337, 0.08507927636138433],
+      "best_epoch": 4,
+      "best_part_iou": 0.08846367146449337,
+      "best_accuracy": 0.5958170667190823,
+      "peak_allocated_mib": 946.453125,
+      "metrics_sha256": "2ae528fa8afefb9d1e779e84b506de6d0b536ef4911f9203f78bd757d442f964",
+      "best_checkpoint_sha256": "72197f405f22cfef3fbbe1759ba82d0d8a8a4089aa8a8543f3a874c766c18a9f",
+      "status_sha256": "af8a54a9a6aad974508245bae8e1661d513cd7e26043592b49730a8c74206d81"
+    }
+  },
+  "decision": {
+    "selected_candidate": "mass_aware_mha",
+    "control": "identity",
+    "candidate_minus_second_best_pilot_part_iou": 0.000508908518228344,
+    "tie_tolerance": 0.0001,
+    "confirmatory_authorized": true,
+    "interpretation": "Pilot selection only; one seed and five epochs are not confirmatory evidence."
+  },
+  "confirmatory": {
+    "arms_to_run": ["identity", "mass_aware_mha"],
+    "seeds": [42, 123, 2026],
+    "epochs": 50,
+    "checkpoint_selection": "best fixed-crop validation Part-IoU, earliest epoch on ties",
+    "primary_metric": "full-cloud validation Part-IoU",
+    "test_split_predictions": false
+  },
+  "promotion_rules": {
+    "mean_paired_full_cloud_part_iou_gain_minimum": 0.0044353341422272395,
+    "mean_paired_accuracy_delta_minimum": -0.0043557722327992885,
+    "mean_paired_mid_plus_tail_iou_delta_strictly_positive": true,
+    "maximum_latency_ratio_vs_identity": 1.25,
+    "maximum_allocated_vram_mib": 3200.0,
+    "all_gradients_finite": true,
+    "test_split_used": false
+  },
+  "confirmatory_implementation": {
+    "shared_initialization": "For each seed, all common embedding, local, fusion, and head parameters are bitwise identical across identity and mass-aware arms; only global attention parameters are arm-specific.",
+    "attention_initialization_rng": "Initialized in a forked RNG scope so it does not shift shared weights or the subsequent dropout stream.",
+    "checkpoint_resume": "Save and restore model, optimizer, scheduler, Python/NumPy/CPU/CUDA RNG and DataLoader generator after every epoch; resume preserves best-checkpoint selection.",
+    "train_runner_sha256": "bc8daac9115c1ed5aeb9dcc97d66a840331c76d752652b47214b6828fc94e4c2",
+    "model_sha256": "e613fb396ba9abd00442eb5e783c3fc341050180c75a8c34c4eb10b5170a1442",
+    "attention_sha256": "8bf2c61017432bf062b7f18aa0997f728af52cd36a059baeaf1900d225137730",
+    "paired_initialization_test": "tests/test_s7_attention.py::test_s7_arms_share_initialization_for_common_parameters"
+  },
+  "resume_patch_scope": "Operational only: no equation, loss, optimizer, schedule, input, or promotion gate changed. This checkpoint/restart patch was made after pilot metrics and before confirmatory metrics."
+}

@@ -1,0 +1,36 @@
+\section{Methodology}
+\label{sec:methodology}
+
+\subsection{Input Representation and Preprocessing}
+Given a raw building point cloud $\mathcal{P} = \{p_i \in \mathbb{R}^3\}_{i=1}^{100000}$, we sample $N = 1024$ points using uniform random sampling. Points are centered at zero-mean and normalized to the unit sphere:
+\begin{equation}
+    p_i' = \frac{p_i - \bar{p}}{\max_j \|p_j - \bar{p}\|_2}, \quad \bar{p} = \frac{1}{N}\sum_{i=1}^N p_i
+\end{equation}
+
+\subsection{Differential Offset-Attention Mechanism}
+Let $X \in \mathbb{R}^{B \times C \times N}$ denote the input feature tensor. The Query ($Q$), Key ($K$), and Value ($V$) projections are parameterized by shared point-wise convolutions:
+\begin{align}
+    Q &= W_q X \in \mathbb{R}^{B \times N \times (C/4)} \\
+    K &= W_k X \in \mathbb{R}^{B \times (C/4) \times N} \\
+    V &= W_v X \in \mathbb{R}^{B \times C \times N}
+\end{align}
+The normalized attention matrix $A \in \mathbb{R}^{B \times N \times N}$ is evaluated as:
+\begin{equation}
+    A = \text{Softmax}(Q \cdot K)
+\end{equation}
+with $L_1$ column normalization to prevent vanishing gradients:
+\begin{equation}
+    \tilde{A}_{i,j} = \frac{A_{i,j}}{\sum_{k} A_{k,j} + \epsilon}
+\end{equation}
+The aggregated feature map is $X_r = V \cdot \tilde{A}$. Rather than adopting simple residual summation, the Offset-Attention formulation evaluates the geometric difference:
+\begin{equation}
+    X_{out} = X + \text{ReLU}\left(\text{BN}\left(W_o (X - X_r)\right)\right)
+\end{equation}
+The term $X - X_r$ acts as a discrete Laplacian operator over the spatial point distribution, effectively accentuating high-frequency boundary variations.
+
+\subsection{Class-Balanced Focal Loss}
+To address long-tail distribution across 53 architectural classes, we substitute standard cross-entropy with a multi-class Focal Loss:
+\begin{equation}
+    \mathcal{L}_{focal} = - \sum_{k=1}^K (1 - p_k)^\gamma \log(p_k)
+\end{equation}
+where $p_k = \frac{\exp(z_k)}{\sum_j \exp(z_j)}$ is the predicted softmax probability and $\gamma = 2.0$ dynamically suppresses the loss gradient contribution from well-classified majority classes.

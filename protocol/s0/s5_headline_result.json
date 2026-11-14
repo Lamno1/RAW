@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "protocol_version": "camo-pyramid-s0-v1",
+  "stage": "S5_HEADLINE",
+  "state": "FROZEN",
+  "created_utc": "2026-09-26T00:00:00Z",
+  "claim": "S5 row-softmax with BCE_PLUS_0.5_LOVASZ versus locked S2 Lovasz control",
+  "evaluation": {
+    "split": "validation",
+    "metric_role": "primary_development_metric",
+    "full_cloud": true,
+    "seeds": [42, 123, 2026, 4409, 5513],
+    "paired_summary": {
+      "path": "runs/full_cloud_validation/paired_summary_5seed.json",
+      "sha256": "879cfb841c043b6b95d04ebbdadea7e74a2ade07870aa9ce16609f1c144d98eb"
+    }
+  },
+  "raw_metrics": {
+    "s5_row_softmax": {
+      "part_iou": [0.14500840380476365, 0.14728078220601767, 0.1471469724698106, 0.14530223372842654, 0.14323227108001382],
+      "accuracy": [0.6000845156037768, 0.5995278742158364, 0.5979888438717706, 0.5946084767111797, 0.5884091809336361],
+      "tail_iou": [0.0038754107334240343, 0.006401516545805832, 0.003704182988700623, 0.0032784267956156537, 0.005859001948517815]
+    },
+    "s2_lovasz_control": {
+      "part_iou": [0.13214483450489511, 0.1341123800504049, 0.1318072860815681, 0.1337323108197165, 0.13296073762724753],
+      "accuracy": [0.5847536626283754, 0.5849886375940756, 0.5801881410199301, 0.5827744075855367, 0.5843300566475557],
+      "tail_iou": [0.004455087560043705, 0.003068027002465214, 0.0033254334523684036, 0.004496989078351113, 0.003701740330200099]
+    }
+  },
+  "paired_statistics": {
+    "part_iou": {"s5_mean": 0.14559413265780646, "s2_mean": 0.13295150981676646, "delta_mean": 0.012642622841040025, "paired_t": 14.913896072703487, "p_two_sided": 0.00011772824518644696},
+    "accuracy": {"s5_mean": 0.59612377826724, "s2_mean": 0.5834069810950947, "delta_mean": 0.012716797172145267, "paired_t": 5.388539362767235, "p_two_sided": 0.005735849473704617},
+    "tail_iou": {"s5_mean": 0.004623707802412792, "s2_mean": 0.0038094554846857067, "delta_mean": 0.0008142523177270848, "paired_t": 0.9590972885532815, "p_two_sided": 0.39182253453432325}
+  },
+  "interpretation": {
+    "miou_claim": "S5 improves full-cloud Part-IoU significantly (paired p < 0.001).",
+    "accuracy_claim": "S5 improves classification accuracy significantly (paired p < 0.01).",
+    "tail_claim": "No statistically significant tail-IoU improvement is claimed (paired p = 0.39182; per-seed deltas have mixed signs)."
+  },
+  "checkpoint_sha256": [
+    {"seed": 42, "arm": "s5", "path": "runs/s5_row_softmax_p4096_seed42/best.pth", "sha256": "3bb64ede8f3cbfe46b7074c0b8c253b8f3c383a2a330b3c037045ce5c686a658"},
+    {"seed": 123, "arm": "s5", "path": "runs/s5_row_softmax_p4096_seed123/best.pth", "sha256": "47eea17dc33065ac0d743d5c840a9fd5f7aed5867121deb415834f6a17f381b3"},
+    {"seed": 2026, "arm": "s5", "path": "runs/s5_row_softmax_p4096_seed2026/best.pth", "sha256": "2ecbbc86353f1cdcc3db9628e1be4b7ce10bdf93b2d32ea892f5e9bb577eb04e"},
+    {"seed": 4409, "arm": "s5", "path": "runs/s5_row_softmax_p4096_seed4409/best.pth", "sha256": "185beba64878539406b899f3c71274311e6825cd48d6c6d4dad4017f33efd853"},
+    {"seed": 5513, "arm": "s5", "path": "runs/s5_row_softmax_p4096_seed5513/best.pth", "sha256": "b46c3f29e0383b5d33cdf097432161bf21676f7512f3fb765df5c7cbb1c18ba8"},
+    {"seed": 42, "arm": "s2", "path": "checkpoints/best_camo_p15_density_bce_lovasz0.5_p4096_seed42.pth", "sha256": "8bb56167680472765cadb540991e0704d51417d383f88f67e5e962f9873ecc45"},
+    {"seed": 123, "arm": "s2", "path": "checkpoints/best_camo_p15_density_bce_lovasz0.5_p4096_seed123.pth", "sha256": "7e4dc72c60334c1a1968241f139ce184c674deba891b59b48a17f5e186767f2e"},
+    {"seed": 2026, "arm": "s2", "path": "checkpoints/best_camo_p15_density_bce_lovasz0.5_p4096_seed2026.pth", "sha256": "fab6739613f07b960376610a73783f40d34458ca03e27d40cdae885eb98e0fa8"},
+    {"seed": 4409, "arm": "s2", "path": "checkpoints/best_camo_p15_density_bce_lovasz0.5_p4096_seed4409.pth", "sha256": "94ea0599a03cd1eea44005b0a869e6ad3eec62a6eb61e42bf42919e04a3deac1"},
+    {"seed": 5513, "arm": "s2", "path": "checkpoints/best_camo_p15_density_bce_lovasz0.5_p4096_seed5513.pth", "sha256": "ef1882ec9634ac1d0269c4ccbd07c659db250a7b0f0dc8b2098a7011eaf7de5c"}
+  ],
+  "traceability": {
+    "s2_objective_decision": {"path": "protocol/s0/s2_objective_decision.json", "sha256": "e50336337973b53ad27775392fa5fe134630abcfdf9dcdf9318d7b195959a2a5"},
+    "s5_accuracy_guardrail": {"path": "protocol/s0/s5_accuracy_guardrail.json", "sha256": "001cac09c86f68fd5bf3a62384336da1f2ce5002776c5c8cadfb477591766b35"}
+  },
+  "verification": {"checkpoint_count": 10, "headline_seed_count": 5, "retroactive_threshold_added": false, "tail_significance_claimed": false, "test_suite": "38 passed", "protocol_verification": true}
+}

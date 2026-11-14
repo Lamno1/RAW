@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "stage": "S7",
+  "state": "AUTHORIZED_BEFORE_CONFIRMATORY_METRICS",
+  "created_utc": "2026-09-26T06:30:23Z",
+  "decision_artifact": "protocol/mutations/s7_pilot_decision_and_confirmatory_lock.json",
+  "selected_arm": "mass_aware_mha",
+  "control_arm": "identity",
+  "arms_to_run": ["identity", "mass_aware_mha"],
+  "seeds": [42, 123, 2026],
+  "epochs": 50,
+  "s7_preregistration_sha256": "9885cef986d8039863b4b8cdc8ece225ca53c8d8659a055fc9b2760563527064",
+  "decision_artifact_sha256": "4e6d099f9cb779d86f40b44ed3c255cf3b2c267a9c85070fd8df1cbeeb431add",
+  "test_split_predictions": false
+}

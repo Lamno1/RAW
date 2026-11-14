@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "protocol_version": "camo-pyramid-s0-v1",
+  "stage": "S5",
+  "state": "FROZEN_BEFORE_S5",
+  "created_utc": "2026-09-23T17:47:53.4603186Z",
+  "metric": "validation_classification_accuracy",
+  "role": "secondary_noninferiority_guardrail",
+  "comparison": "paired S5 candidate minus locked S2 BCE_PLUS_0.5_LOVASZ baseline",
+  "baseline": {
+    "objective": "BCE_PLUS_0.5_LOVASZ",
+    "seeds": [42, 123, 2026],
+    "accuracy_values": [
+      0.5778215039238523,
+      0.5790336630677868,
+      0.5748043851207163
+    ],
+    "accuracy_mean": 0.5772198507041185,
+    "accuracy_sample_sd": 0.0021778861163996442,
+    "objective_decision_artifact": "protocol/s0/s2_objective_decision.json",
+    "objective_decision_sha256": "e50336337973b53ad27775392fa5fe134630abcfdf9dcdf9318d7b195959a2a5"
+  },
+  "calibration": {
+    "absolute_floor": 0.002,
+    "formula": "max(absolute_floor, 2 * baseline_accuracy_sample_sd)",
+    "maximum_mean_absolute_accuracy_drop": 0.0043557722327992885,
+    "maximum_mean_drop_percentage_points": 0.43557722327992885
+  },
+  "decision_rule": {
+    "pass_condition": "mean paired accuracy delta >= -0.0043557722327992885",
+    "paired_delta_definition": "candidate_accuracy(seed) - locked_baseline_accuracy(seed)",
+    "report_each_seed": true,
+    "report_mean_and_sample_sd": true,
+    "report_confidence_interval_as_diagnostic": true,
+    "confidence_interval_is_a_hard_gate": false
+  },
+  "scope": {
+    "applies_from_stage": "S5",
+    "applies_to_s2_retroactively": false,
+    "changes_s2_objective_decision": false,
+    "changes_primary_miou_gate": false,
+    "changes_tail_gain_gate": false,
+    "frozen_before_any_s5_training_metric": true
+  },
+  "rationale": {
+    "method": "mirror the pre-registered uncertainty-scaled architecture threshold pattern using only locked control variability",
+    "independence": "no S5 candidate prediction or metric was available when this margin was calculated",
+    "interpretation": "accuracy is a guardrail; Part IoU remains the primary development metric"
+  }
+}

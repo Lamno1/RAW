@@ -1,0 +1,59 @@
+{
+  "current_strict": {
+    "loss_kind": "current",
+    "strict": true,
+    "max_loss_delta": 1.1444091796875e-05,
+    "first_nonfinite": {
+      "batch": 72,
+      "loss": 2.4481091499328613,
+      "current_loss": 2.4481091499328613,
+      "reference_loss": 2.4481067657470703,
+      "logit_abs_max": 4.40625,
+      "scale": 65536.0,
+      "bad_parameter_count": 1,
+      "bad_parameters_first10": [
+        "head.4.weight"
+      ]
+    },
+    "skipped_steps": 0,
+    "final_scale": 65536.0
+  },
+  "reference_strict": {
+    "loss_kind": "reference",
+    "strict": true,
+    "max_loss_delta": 1.0728836059570312e-05,
+    "first_nonfinite": {
+      "batch": 72,
+      "loss": 2.448082208633423,
+      "current_loss": 2.448085069656372,
+      "reference_loss": 2.448082208633423,
+      "logit_abs_max": 4.40625,
+      "scale": 65536.0,
+      "bad_parameter_count": 1,
+      "bad_parameters_first10": [
+        "head.4.weight"
+      ]
+    },
+    "skipped_steps": 0,
+    "final_scale": 65536.0
+  },
+  "legacy_gradscaler": {
+    "loss_kind": "current",
+    "strict": false,
+    "max_loss_delta": 1.5735626220703125e-05,
+    "first_nonfinite": {
+      "batch": 72,
+      "loss": 2.4481091499328613,
+      "current_loss": 2.4481091499328613,
+      "reference_loss": 2.4481067657470703,
+      "logit_abs_max": 4.40625,
+      "scale": 65536.0,
+      "bad_parameter_count": 1,
+      "bad_parameters_first10": [
+        "head.4.weight"
+      ]
+    },
+    "skipped_steps": 1,
+    "final_scale": 32768.0
+  }
+}

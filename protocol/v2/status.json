@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "protocol_version": "camo-pyramid-srot-v2",
+  "stage": "S5-SROT-v2",
+  "state": "HARDWARE_GATE_FAILED_HALTED_BEFORE_TRAINING",
+  "mutation_artifact": "protocol/v2/srot_latency_mutation.json",
+  "mutation_sha256": "75b5f28a119cfe7da396ea9d057dbcd14129432f27302e42d2a486dcb11a8738",
+  "benchmark_runner": "benchmark_srot_v2_gate.py",
+  "benchmark_runner_sha256": "ecd6f948b3d99619fce00def682dfa020e98b0cfc1608854ddac39a7746fdb97",
+  "segmentation_training_authorized": false,
+  "benchmark_started": true,
+  "benchmark_completed": true,
+  "benchmark_artifact": "runs/srot_v2_gate/benchmark.json",
+  "benchmark_sha256": "59e817a61b93f815fd870a3a6b1ddb3de91c73fe03847cd1a935e3f84653aa7e",
+  "results": {
+    "median_step_seconds": 1.3411923500243574,
+    "maximum_median_step_seconds": 0.65536,
+    "points_per_second": 24431.991428675312,
+    "minimum_points_per_second": 50000.0,
+    "max_memory_allocated_mib": 954.9697265625,
+    "maximum_allocated_vram_mib": 3200.0,
+    "relative_mass_residual": 0.0,
+    "adjoint_relative_error": 4.403738955716108e-7,
+    "numerical_gate_passed": true,
+    "hardware_gate_passed": false
+  },
+  "decision": "Retain row-softmax as the S5 architecture. SROT v2 segmentation training remains forbidden.",
+  "next_action": "Proceed to full-cloud validation and modern baseline comparisons for the row-softmax architecture; retain SROT v1/v2 as negative systems evidence."
+}

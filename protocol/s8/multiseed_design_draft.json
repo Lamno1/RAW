@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "stage": "S8_POST_PILOT_MULTI_SEED_DESIGN",
+  "state": "DRAFT_NOT_LOCKED_NOT_AUTHORIZED",
+  "created_utc": "2026-09-29",
+  "decision_basis": {
+    "pilot_feasibility": "The five-epoch seed-42 pilot completed with finite training and within the frozen VRAM budget.",
+    "pilot_full_cloud_validation": "187 validation buildings, 18.7 million points, three frozen votes; descriptive only.",
+    "failed_first_full_cloud_attempt": "The first attempt completed inference but failed before metric persistence with KeyError: 'vote_seeds'; the successful retry took 4126.3 seconds on its own.",
+    "shape_iou_audit_gap": "The pilot artifact does not contain per-building results needed to independently recompute shape IoU.",
+    "decision": "Prepare an internal multi-seed validation gate; no architecture efficacy claim is authorized by the pilot."
+  },
+  "proposed_experiment": {
+    "purpose": "Internal S8 architecture gate against the existing S7 mass-aware MHA validation control.",
+    "seeds": [42, 123, 2026],
+    "epochs_per_seed": 50,
+    "training_splits": ["train", "val"],
+    "test_split_access": false,
+    "checkpoint_selection": "Best fixed-crop validation Part-IoU, earliest epoch on exact ties, before full-cloud evaluation.",
+    "full_cloud_validation": {
+      "vote_seeds": [1103, 2207, 3301],
+      "chunk_size": 4096,
+      "inference_batch_size": 1,
+      "primary_metric": "global Part-IoU on the full validation clouds",
+      "secondary_metrics": ["classification_accuracy", "shape_iou", "head_iou", "mid_iou", "tail_iou"],
+      "audit_output": "Persist per-building confusion matrices or equivalent per-building IoU and class-union data so shape IoU can be recomputed independently."
+    },
+    "comparison": "Pair each S8 seed with the existing S7 mass-aware MHA result of the same seed; the S7 validation results are already known, so this is an internal development gate only.",
+    "claim_scope": "Three seeds support an internal gate only. Any headline claim requires a separate prospective decision with at least five paired seeds.",
+    "failure_policy": "Preserve failures and partial artifacts; do not silently rerun with changed code or parameters. Register any operational fix before retry."
+  },
+  "existing_dependency_sha256": {
+    "s0_protocol": "ba457d194f2665a1dee5997a60371b004c144f89484f67249a4627c3fb03cbe3",
+    "validation_split": "33899f83266122e830e2cb5bae3a0dadb05024b8a837716700ae74b164012835",
+    "s8_model": "c14412e6c060f3fc873b00b0b0d3200b32b6ceef928d5ed31a0847b0a3cf436b",
+    "s8_dataset": "8c020ab4c561e77d5221682bad95085ca20ec6f561c56da55af0053c59e157d7",
+    "metrics_implementation": "7a230fb984c774af1ee396136c365a889bbe1b72443c207f38a9d0ddc7175c4b",
+    "s8_pilot_full_cloud_result": "c8e37a86c67670c29d1799f6274d75351f0b7e9bb9d044e8e72ab63cd4edf64a",
+    "s7_paired_validation_summary": "145802837e4ec91c01bfa8342d9d43680e3c6865aa69d1029ebc6ddd8ee9ac95"
+  },
+  "lock_requirements_before_data_access": [
+    "Implement and test a seed-parameterized S8 training runner with complete checkpoint resume.",
+    "Implement and test a validation-only full-cloud evaluator that persists per-building audit data.",
+    "Freeze runner, evaluator, model, data, split, S7 control, metric, thresholds, and hardware hashes in a separate preregistration.",
+    "Record an explicit post-pilot execution authorization referencing that preregistration."
+  ],
+  "training_started": false,
+  "confirmatory_authorized": false,
+  "test_evaluation_authorized": false
+}

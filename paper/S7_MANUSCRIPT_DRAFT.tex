@@ -1,0 +1,155 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=26mm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+
+\title{A Global Proxy-Attention Block on a Density-Mass Backbone for Building-Part Segmentation: A Three-Seed Internal Evaluation}
+\author{Research draft --- author details to be supplied}
+\date{30 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We study 31-class point-wise building-part segmentation under a 4~GB laptop-GPU constraint. The evaluated S7 system processes 4,096-point crops with cached density-derived point masses, one local measure-aware operator at the fine resolution, a row-normalized transport step to 256 proxies, a second local operator, and a mass-aware global attention block at the proxy resolution. A paired, prospectively specified comparison against the same backbone with an identity global block used three training seeds. On full-cloud validation, S7 increased mean Part IoU from 15.36\% to 18.50\% and accuracy from 61.68\% to 67.00\%. Its measured dry-run step-latency ratio was 1.122, below the registered limit of 1.25, and peak allocated training memory was 946.5~MiB, below 3,200~MiB. After the S7 architecture was frozen, one authorized three-seed test campaign yielded descriptive means of 17.70\% Part IoU, 14.82\% Shape IoU, and 59.65\% point accuracy. These comparisons support the selected global-block addition within this development protocol. They do not isolate the effect of density-derived mass or of the log-mass term inside attention. The validation buildings also served for pilot arm selection, checkpoint selection, and the gate comparison, so the validation gain is a development-set estimate. The protocol requires at least five seeds for a headline claim, so the present three-seed results remain an internal evaluation.
+\end{abstract}
+
+\section{Introduction}
+
+Architectural-part segmentation assigns a semantic part label to each point of a building cloud. The current project uses 31 part labels and a fixed train/validation/test split. Its design constraint is a laptop GPU with 4~GB of physical memory and a 3,200~MiB allocated-memory gate. Processing every point through dense global attention would be an unsuitable implementation choice at this scale. S7 instead builds a local representation on 4,096-point crops and applies global attention only after reducing the representation to 256 proxies.
+
+This report evaluates one specific design decision: whether a global proxy block improves a fixed density-mass, row-softmax backbone. The paired identity and mass-aware-attention arms share the same data pipeline, local operators, coarsener, decoder, objective, crop schedule, and checkpoint rule. The intervention is the global block. A separate unweighted-attention arm was included in the five-epoch pilot; the subsequent three-seed confirmatory comparison was between the pilot-selected mass-aware-attention arm and identity. The confirmatory comparison therefore does not establish the incremental value of the mass term over ordinary attention across three seeds.
+
+The document reports the frozen validation decision and the subsequent one-time test evaluation. It distinguishes these from the earlier Prototype~1 mass-attribution experiment and from the later S8 internal architecture gate.
+
+\section{Method}
+
+\subsection{Input and cached point mass}
+
+For each complete building cloud, preprocessing computes a center and radial scale before crop sampling. Coordinates in subsequent crops inherit that full-building normalization. The preprocessing pipeline computes a point-aligned, detached density-derived mass. With a non-self $k$-nearest-neighbor set and $k=16$, its surface-density estimate is
+\begin{equation}
+ h_i^2=\frac{1}{k}\sum_{j\in\mathcal N_k(i)}\lVert x_i-x_j\rVert_2^2,
+ \qquad
+ \rho_i=\frac{1}{2\pi(h_i^2+\epsilon)}
+ \frac{1}{k}\sum_{j\in\mathcal N_k(i)}
+ \exp\!\left(-\frac{\lVert x_i-x_j\rVert_2^2}{2(h_i^2+\epsilon)}\right).
+\end{equation}
+Inverse densities $1/(\rho_i+\epsilon)$ are clipped at the within-building 1st and 99th percentiles and normalized to mean one; the implementation also floors $h_i^2$ at $\epsilon=10^{-6}$, which is omitted from the equation. A sampled crop inherits the cached masses of its selected points, followed by a mean-one crop rescaling. Neither mass estimation nor neighborhood construction participates in autograd. The model receives normalized XYZ coordinates, unit-normal components, and RGB features. The current implementation does not establish whole-model rotation invariance; the local edge descriptors and proxy-attention positional bias have narrower gravity-axis invariance properties.
+
+\subsection{Local operator and proxy construction}
+
+S7 uses one Local Measure-Aware Operator (LMAO) at 4,096 points and another at 256 proxies. For a fine or proxy neighborhood, its normalized message weights are
+\begin{equation}
+ \alpha_{ij}^{(c)}=
+ \frac{m_j\kappa_\theta^{(c)}(g_{ij})}
+ {\sum_{r\in\mathcal N(i)}m_r\kappa_\theta^{(c)}(g_{ir})},
+ \qquad 0.25<\kappa_\theta^{(c)}(g)<4.0 .
+\end{equation}
+The value projection precedes neighbor gathering. Weighted reductions run in FP32. LMAO reproduces a constant neighbor message through row normalization; it does \emph{not} conserve the mass-weighted feature integral. The implementation uses a numerical floor on the denominator, so exact constant reproduction is a mathematical property of the positive-weight expression rather than a claim about all floating-point edge cases.
+
+The label-free topology adapter selects 256 spatial anchors, builds an eight-target sparse support per fine point, and constructs 16-neighbor fine and proxy graphs using a CPU $k$-d tree. The fixed row-softmax coarsener forms a sparse plan $P$ whose row sum equals the source mass:
+\begin{equation}
+ P_{ij}=m_i\frac{\exp(-C_{ij}/\varepsilon)}
+ {\sum_{r\in\mathcal N(i)}\exp(-C_{ir}/\varepsilon)},
+ \qquad \varepsilon=0.2,
+ \qquad m'_j=\sum_i P_{ij}.
+\end{equation}
+Here $C_{ij}$ is a fixed geometric transport cost between fine point $i$ and proxy $j$: a distance term plus a sign-invariant normal term with weight $0.25$ (\texttt{geometry\_transport\_cost} in \texttt{camo\_build}).
+Thus the coarsener preserves the total source mass, a different statement from feature-integral conservation by LMAO. The decoder uses the frozen nearest-proxy index and fuses the pulled proxy feature with the fine residual before the 31-class head. S7 does not implement a two-transition, three-resolution transport-adjoint decoder.
+
+\subsection{Global-block comparison and objective}
+
+At 256 proxies, S7 applies four-head attention with width 64. The selected arm adds proxy log mass to each key score:
+\begin{equation}
+ s_{ij}^{(r)}=
+ \frac{q_i^{(r)\top}k_j^{(r)}}{\sqrt{d_r}}
+ +b_r(g_{ij})+\log(m'_j+10^{-6}),
+ \qquad
+ \alpha_{ij}^{(r)}=\operatorname{softmax}_j(s_{ij}^{(r)}).
+\end{equation}
+The geometry bias uses gravity-preserving and normal-sign-invariant pair descriptors. The identity control omits the entire global block. The pilot's ordinary-attention control used the same attention structure with the log-mass term removed. The training objective in every S7 arm is static train-count-weighted cross-entropy plus $0.5$ times Lov\'asz--Softmax. It is not focal loss. An all-ignored batch raises an error.
+
+\section{Experimental protocol}
+
+The fixed split contains 1,481 training buildings, 187 validation buildings, and 181 test buildings. Training used 4,096 points per crop, batch size eight, BF16 autocast, AdamW with learning rate $10^{-3}$ and weight decay $10^{-4}$, cosine annealing, and 50 epochs for each confirmatory arm and seed. The seeds were 42, 123, and 2026. The checkpoint rule selected the best fixed-crop validation Part IoU, with the earliest epoch winning ties. Pilot selection and confirmatory gates were locked before the associated metrics were inspected. The same 187 validation buildings were used for the pilot arm selection, the per-epoch checkpoint selection, and the paired gate comparison. The selection effect is the same for both arms, but the reported validation delta is not an out-of-sample estimate.
+
+Full-cloud evaluation used three fixed votes. Each vote covered every point through padded, permuted 4,096-point chunks, and logits were aggregated back to the original points. The candidate and identity validation evaluators used the same crop/vote rule and inference batch size four. Part IoU is the mean of global per-class IoUs over classes with a nonzero union; Shape IoU is the mean over buildings of their mean defined class IoUs; point accuracy is correct valid points divided by all valid points. Head, mid, and tail IoUs are secondary diagnostics defined by training-class counts.
+
+The S7 decision rule required mean paired validation Part-IoU gain of at least 0.0044353, accuracy change of at least $-0.0043558$, a positive combined mid-plus-tail change, step-latency ratio at most 1.25, peak allocated memory at most 3,200~MiB, and finite logged gradients. The latency ratio came from a ten-step real-batch dry run with the first four steps excluded from timing; its debug and timed steps occurred in one process. It is computed from the median of six timed steps on one fixed real batch, and is not a full-cloud wall-time ratio. Only after the validation gates passed was the selected S7 architecture frozen and one test campaign authorized. The test set was used for descriptive evaluation, not for checkpoint or architecture selection.
+
+\section{Results}
+
+\subsection{Paired full-cloud validation}
+
+\begin{table}[htbp]
+\centering
+\caption{Three-seed full-cloud validation means. Changes are S7 mass-aware proxy attention minus the identity global-block control, in percentage points. The density-mass backbone is fixed in both arms.}
+\label{tab:validation}
+\begin{tabular}{lrrr}
+\toprule
+Metric & Identity & S7 attention & Change (pp) \\
+\midrule
+Part IoU & 15.36\% & 18.50\% & +3.14 \\
+Point accuracy & 61.68\% & 67.00\% & +5.32 \\
+Head IoU & 38.28\% & 43.65\% & +5.37 \\
+Mid IoU & 8.71\% & 12.44\% & +3.74 \\
+Tail IoU & 0.56\% & 1.13\% & +0.57 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The exact paired mean Part-IoU gain was 0.0314038 and the accuracy change was 0.0531790. Both exceeded their prospective gate thresholds. The sum of the mid- and tail-IoU changes was positive (0.0430598), so the gain was not confined to the head group under that registered rule. The dry-run step-latency ratio was 1.1218312 and the maximum allocated memory across confirmatory training runs (from the per-run hardware logs) was 946.45~MiB; both passed their gates. The separate dry-run benchmark recorded 950.17~MiB for the same arm. These values support promotion of S7 within its frozen internal decision rule. They do not demonstrate a density-mass benefit independently of global attention.
+
+\subsection{One authorized test campaign}
+
+\begin{table}[htbp]
+\centering
+\caption{Descriptive S7 test metrics from three frozen checkpoints, one campaign, 181 complete buildings per seed and three votes per building. Mean and sample standard deviation are across the three seeds, not across points or buildings.}
+\label{tab:test}
+\begin{tabular}{lr}
+\toprule
+Metric & Mean $\pm$ sample SD \\
+\midrule
+Part IoU & $17.70\pm0.24$\% \\
+Shape IoU & $14.82\pm0.03$\% \\
+Point accuracy & $59.65\pm0.30$\% \\
+Head IoU & $40.25\pm0.54$\% \\
+Mid IoU & $12.44\pm0.52$\% \\
+Tail IoU & $1.99\pm0.44$\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+These are absolute scores for the validation-selected S7 arm. No matched identity-arm test evaluation was performed in this campaign, and no test-set improvement over identity is inferred. Test point accuracy (59.65\%) is 7.35 percentage points below the S7 validation accuracy (67.00\%), and test Part IoU is 0.80 points below validation. The two splits contain different buildings, and because no identity arm was evaluated on test, this gap cannot be separated into split difference and selection effects. The three test seed values are reported by the frozen test summary; Shape IoU here is the mean of the three values in the per-seed test artifacts.
+
+\subsection{Related internal findings}
+
+The earlier Prototype~1 experiment compared no-mass and density-mass local operators under its own objective and architecture. Density mass increased mean validation IoU by 0.00071 over three paired seeds, with a two-sided paired $p=0.0673$; this is directional, statistically inconclusive evidence at 0.05. A uniform-mass arm was checked for one-epoch equivalence with no-mass but was not run for 50 epochs. That experiment does not make density mass a confirmed explanation of the S7 gain.
+
+The later S8 three-seed internal gate used S7 validation records as its control. S8 gained 0.01884 Part IoU on average but lost 0.00972 accuracy and had a 4.51-fold latency ratio under the locked evaluators. Its preregistered accuracy and latency gates failed. S8 was not promoted and its test split was not evaluated. S8's internal result is not a test comparison with the S7 scores in Table~\ref{tab:test}.
+
+\section{Limitations and interpretation}
+
+Only three confirmatory training seeds were used, while the S0 protocol requires at least five for a headline claim. The test means are descriptive; the test set was not used for model selection or for a fresh pairwise comparison. The S7 confirmatory comparison contrasts the selected attention block with identity. It does not isolate the log-mass term from the rest of attention, because ordinary attention was not included in the three-seed confirmatory comparison. Prototype~1's uniform control had no 50-epoch run. The S7 dry-run combined anomaly-detection and timed steps in one process, so its step-latency observation should not be presented as a separately replicated performance-process measurement. These limits do not change the recorded internal gate decision.
+
+The system also uses a single 4,096-to-256 reduction and nearest-proxy decoding. It should not be described as a validated three-resolution pyramid or as having an adjoint transport decoder. Full-model azimuth invariance and pointwise density robustness were not established by the reported results. The local operator is measure aware but is not feature-mass conservative.
+
+\section{Conclusion}
+
+Under a fixed density-mass backbone and frozen three-seed protocol, the selected S7 proxy-attention block improved full-cloud validation Part IoU and accuracy over the identity global-block control while meeting the registered step-latency and memory gates. The subsequent single test campaign provides descriptive scores for the frozen S7 architecture. The result justifies using S7 as the project's current backbone under its internal decision rule. It does not support a headline superiority claim, an independent causal claim for density mass, or promotion of S8.
+
+\appendix
+\section{Artifact provenance for review}
+
+All paths below are relative to the project workspace. The full SHA-256 values are stored in the authorization and audit artifacts; the prefixes here help locate them without treating a local path as an archival reference.
+\begin{itemize}
+\item S7 preregistration: \texttt{s7\_global\_proxy\_preregistration.json} in \texttt{protocol/mutations}; SHA-256 prefix \texttt{9885cef986d8}.
+\item Paired validation summary: \texttt{paired\_summary.json} in \texttt{runs/s7\_confirmatory}; SHA-256 prefix \texttt{145802837e4e}.
+\item Frozen S7 test authorization: the architecture-freeze record in \texttt{protocol/s7}.
+\item Per-seed test reports and summary: \texttt{runs/s7\_test}.
+\item Nine-condition audit: \texttt{prototype1\_nine\_condition\_audit.md} in \texttt{protocol/s7}.
+\item S8 internal failure record: \texttt{paired\_summary.json} in \texttt{runs/s8\_multiseed}.
+\end{itemize}
+
+\end{document}

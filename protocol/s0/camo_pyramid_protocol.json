@@ -1,0 +1,87 @@
+{
+  "checkpoint_selection_metric": "fixed_crop_validation_part_iou",
+  "class_counts_sha256": "8b3597129a4448c823a1c67935b1fcd0612074b19ffaa8d007cccf58add63802",
+  "class_groups": {
+    "head": [
+      0,
+      3,
+      8,
+      1,
+      13,
+      6,
+      4,
+      15,
+      16,
+      22
+    ],
+    "mid": [
+      17,
+      21,
+      5,
+      9,
+      19,
+      11,
+      18,
+      2,
+      10,
+      14
+    ],
+    "tail": [
+      25,
+      12,
+      7,
+      20,
+      24,
+      28,
+      26,
+      29,
+      30,
+      23,
+      27
+    ]
+  },
+  "confirmatory_seeds": [
+    42,
+    123,
+    2026
+  ],
+  "created_utc": "2026-09-23T09:14:48.212540+00:00",
+  "crop_seeds": [
+    1103,
+    2207,
+    3301
+  ],
+  "diagnostic_metrics": [
+    "head_mid_tail_iou",
+    "boundary_iou",
+    "latency",
+    "throughput",
+    "max_memory_allocated_mib",
+    "max_memory_reserved_mib"
+  ],
+  "full_cloud_votes": 3,
+  "headline_minimum_seeds": 5,
+  "ignore_index": -100,
+  "label_zero_policy": "geometry_context_ignore_loss_metric",
+  "maximum_single_seed_exploratory_configs_per_component": 8,
+  "normal_geometry_policy": "sign_invariant_until_complete_orientation_audit_passes",
+  "official_evaluation_source": "https://eval.ai/web/challenges/challenge-page/1938/evaluation",
+  "official_point_metrics": {
+    "classification_accuracy": "correct valid points divided by all valid points",
+    "part_iou": "mean global per-class IoU over classes with non-zero union",
+    "shape_iou": "mean over buildings of mean per-class IoU over non-zero unions"
+  },
+  "primary_development_metric": "full_cloud_validation_part_iou",
+  "test_policy": "hash/name audit allowed; predictions and metrics forbidden until S12",
+  "threshold_rules": {
+    "adjoint_relative_error": 1e-05,
+    "delta_arch": "max(0.002, 2*sigma_pair); populate after S1 before S5",
+    "delta_floor_absolute_miou": 0.002,
+    "maximum_allocated_vram_mib": 3200.0,
+    "maximum_latency_ratio": 1.25,
+    "miou_noninferiority_margin": 0.001,
+    "relative_mass_residual": 1e-06,
+    "tail_absolute_gain": 0.001
+  },
+  "version": "camo-pyramid-s0-v1"
+}

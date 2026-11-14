@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "stage": "S8_MULTI_SEED_INTERNAL_GATE",
+  "state": "CONFIGURATION_FROZEN_PENDING_INDEPENDENT_AUDIT",
+  "architecture": "CAMOPyramidS8_4096_1024_256_mass_aware_mha_row_softmax",
+  "training": {
+    "seeds": [42, 123, 2026],
+    "epochs": 50,
+    "batch_size": 8,
+    "points": 4096,
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "gradient_clip_norm": 1.0,
+    "precision": "CUDA BF16 autocast; mass, transport, reductions and loss sorting in FP32",
+    "objective": "BCE_PLUS_0.5_LOVASZ",
+    "scheduler": "CosineAnnealingLR over 50 epochs, eta_min=1e-6",
+    "checkpoint_selection": "Best fixed-crop validation Part-IoU, earliest epoch on exact ties"
+  },
+  "evaluation": {
+    "split": "val",
+    "vote_seeds": [1103, 2207, 3301],
+    "chunk_size": 4096,
+    "inference_batch_size": 1,
+    "primary_metric": "full_cloud_validation_part_iou",
+    "per_building_confusion_required": true,
+    "no_full_cloud_checkpoint_selection": true
+  },
+  "comparison": {
+    "control": "S7 mass_aware_mha existing three-seed validation result",
+    "paired_seeds": [42, 123, 2026],
+    "internal_gate_only": true,
+    "headline_claim_authorized": false,
+    "minimum_paired_seeds_for_headline_claim": 5,
+    "mean_paired_part_iou_gain_minimum": 0.004550268811276386,
+    "threshold_basis": "max(0.002, 2 x 0.002275134405638193), using only pre-existing S7 control seed dispersion",
+    "mean_paired_accuracy_delta_minimum": -0.001,
+    "mean_paired_tail_iou_gain_minimum": 0.001,
+    "maximum_latency_ratio_vs_s7": 1.25,
+    "maximum_allocated_vram_mib": 3200.0,
+    "all_gradients_finite": true
+  },
+  "allowed_splits": ["train", "val"],
+  "test_split_access": false,
+  "full_cloud_test_evaluation_authorized": false
+}

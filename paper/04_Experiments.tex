@@ -1,0 +1,32 @@
+\section{Experiments and Results}
+\label{sec:experiments}
+
+\subsection{Experimental Setup}
+All experiments are executed on an edge-tier workstation equipped with an NVIDIA GeForce RTX 3050 Ti Laptop GPU (4GB VRAM), Intel Core i7 processor, and PyTorch 2.6 with CUDA 12.4 acceleration. Optimization is conducted via AdamW with an initial learning rate $\eta_0 = 10^{-3}$, weight decay $10^{-4}$, and Cosine Annealing learning rate schedule down to $10^{-6}$ over 50 epochs. Mixed Precision (FP16) with automated gradient scaling is deployed to maximize tensor throughput.
+
+\subsection{Quantitative Results and Ablation Study}
+Table \ref{tab:ablation} presents the comparative evaluation of our lightweight PCT configuration against standard baselines.
+
+\begin{table}[htbp]
+\centering
+\caption{Ablation study on loss formulations and latent dimensions on BuildingNet.}
+\label{tab:ablation}
+\begin{tabular}{lcccc}
+\toprule
+Model Configuration & $d_{model}$ & Peak VRAM & Val Accuracy (\%) & Epoch 1 Loss \\
+\midrule
+Standard Cross-Entropy (Baseline) & 128 & 450 MB & 45.86\% & 2.0068 \\
+Focal Loss ($\gamma = 2.0$) & 128 & 450 MB & \textit{[Running...]} & \textit{[Running...]} \\
+Scaled PCT ($d_{model} = 256$) & 256 & 1,420 MB & \textit{[Planned]} & \textit{[Planned]} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Error Analysis and Qualitative Visualizations}
+Figure \ref{fig:confusion_matrix} illustrates the $53 \times 53$ confusion matrix, highlighting architectural categories with structural overlap (e.g., churches versus cathedrals sharing pointed spires).
+% \begin{figure}[htbp]
+%     \centering
+%     \includegraphics[width=\linewidth]{confusion_matrix.png}
+%     \caption{Confusion matrix evaluated on the BuildingNet test partition (300 DPI).}
+%     \label{fig:confusion_matrix}
+% \end{figure}

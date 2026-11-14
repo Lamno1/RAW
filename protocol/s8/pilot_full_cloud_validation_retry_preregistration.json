@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "stage": "S8_SINGLE_SEED_PILOT_FULL_CLOUD_VALIDATION_RETRY",
+  "state": "LOCKED_BEFORE_RETRY_METRIC_ACCESS",
+  "registered_utc": "2026-09-27",
+  "purpose": "Retry only the artifact-writing step after attempt 001 completed all 187 validation buildings and all three frozen votes but exited before emitting metrics because of a result-serialization KeyError. No metric values were emitted or persisted by attempt 001. Retry repeats the exact preregistered inference; no model, data, vote, metric, or threshold changes.",
+  "failure_record": "runs/s8_pilot/mass_aware_mha_seed42/full_cloud_validation_attempt_001_failed.json",
+  "original_preregistration": "protocol/s8/pilot_full_cloud_validation_preregistration.json",
+  "original_preregistration_sha256": "98ca0cb4ace7d9c15d58566773ab390b2b867bc8280e139f083050f264dabe4c",
+  "same_evaluation_contract": {
+    "split": "val",
+    "training_seed": 42,
+    "vote_seeds": [1103, 2207, 3301],
+    "chunk_size": 4096,
+    "inference_batch_size": 1,
+    "checkpoint_rule_or_selection_changed": false,
+    "metrics_or_thresholds_changed": false,
+    "test_split_access": false,
+    "confirmatory_authorized": false
+  },
+  "locked_sha256": {
+    "evaluator": "6a0c39d29a796daaf12b6335a93790449232d0d3729247776babed0f444ba704",
+    "checkpoint": "a89638620d8b95ea0a158cdf677226083d9f3ff5beecc975701d6e88a9d6af2a",
+    "pilot_authorization": "667505ba1a56c2d87b5c0aee12297afe5a9172ba8081cf34855e6ca9f668579b",
+    "pilot_configuration": "b48730b9a0621c9bf992e07a8cdcc0d0a558c4209effc033696846429028da7a",
+    "s0_protocol": "ba457d194f2665a1dee5997a60371b004c144f89484f67249a4627c3fb03cbe3",
+    "validation_split": "33899f83266122e830e2cb5bae3a0dadb05024b8a837716700ae74b164012835"
+  },
+  "immutable_output": "runs/s8_pilot/mass_aware_mha_seed42/full_cloud_validation.json"
+}

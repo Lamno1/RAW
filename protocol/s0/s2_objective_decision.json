@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "protocol_version": "camo-pyramid-s0-v1",
+  "stage": "S2",
+  "state": "FROZEN",
+  "created_utc": "2026-09-23T17:44:34.1876870Z",
+  "decision": "BCE_PLUS_0.5_LOVASZ",
+  "objective": {
+    "base": "StaticBalancedCrossEntropy",
+    "lovasz": "LovaszSoftmaxLoss",
+    "lovasz_weight": 0.5,
+    "formula": "L = L_BCE + 0.5 * L_Lovasz",
+    "ignore_index": -100
+  },
+  "confirmatory_configuration": {
+    "seeds": [42, 123, 2026],
+    "points": 4096,
+    "batch_size": 8,
+    "epochs": 50,
+    "mass_mode": "density",
+    "amp_dtype": "bfloat16",
+    "hard_nonfinite_gradient_gate": true
+  },
+  "pre_registered_decision_rule": {
+    "source": "plans/CAMO_PYRAMID_BLUEPRINT.md#5-step-s2--prototype-15-lovasz-ablation",
+    "rule": "retain B-CE if tail and macro IoU do not improve consistently",
+    "observed_macro_consistency": "Lovasz improved validation Part IoU for 3/3 paired seeds",
+    "observed_tail_consistency": "Lovasz improved tail IoU for 3/3 paired seeds",
+    "decision_rule_satisfied": true
+  },
+  "metrics": {
+    "bce_part_iou_mean": 0.12757278630119417,
+    "bce_part_iou_sample_sd": 0.0012614446962366307,
+    "lovasz_part_iou_mean": 0.13072131796177713,
+    "lovasz_part_iou_sample_sd": 0.0013765501405344062,
+    "paired_part_iou_gain_mean": 0.0031485316605829503,
+    "paired_part_iou_gain_sample_sd": 0.00019470932172886587,
+    "paired_part_iou_gains": [
+      0.00292860589511848,
+      0.0032989446759696672,
+      0.003218044410660703
+    ],
+    "paired_t_statistic": 28.007990356839713,
+    "paired_t_pvalue_two_sided": 0.0012723500929231483,
+    "bce_accuracy_mean": 0.5792661807175739,
+    "lovasz_accuracy_mean": 0.5772198507041185,
+    "accuracy_delta_mean": -0.002046330013455404,
+    "bce_head_iou_mean": 0.33202927543282074,
+    "lovasz_head_iou_mean": 0.3357677619327368,
+    "bce_mid_iou_mean": 0.06019866317518654,
+    "lovasz_mid_iou_mean": 0.06495617221504418,
+    "bce_tail_iou_mean": 0.0029524535688133743,
+    "lovasz_tail_iou_mean": 0.00410195593975289,
+    "tail_iou_gain_mean": 0.0011495023709395156
+  },
+  "threshold_application": {
+    "tail_absolute_gain_threshold": 0.001,
+    "tail_absolute_gain_passed": true,
+    "delta_arch_applied_to_s2": false,
+    "accuracy_gate_applied_to_s2": false,
+    "retroactive_threshold_added": false,
+    "s5_accuracy_guardrail": "PENDING_SEPARATE_PRE_REGISTRATION_BEFORE_S5"
+  },
+  "interpretation": {
+    "accepted_tradeoff": "Part, head, mid, and tail IoU improved while point accuracy decreased by 0.00204633 absolute",
+    "statistical_caution": "The paired t-test has only three seed pairs and is supporting evidence, not a headline claim",
+    "default_objective_for_s5": true
+  },
+  "artifact_sha256": [
+    {"path": "logs/camo_p15_density_bce_p4096_seed42.csv", "sha256": "aa40b21f71d5a1a68a10edef788cc0a4f00f1922dbad6d2c6d7fed474b0b323f"},
+    {"path": "logs/camo_p15_density_bce_lovasz0.5_p4096_seed42.csv", "sha256": "16d440da34faea3c61bef7ca943113d920cedf10602d0514ee7d6fd633232abb"},
+    {"path": "logs/camo_p15_density_bce_p4096_seed123.csv", "sha256": "273d0e8ce3d3b3efa46fb4fb0f3f46ca454f0481f307653abe2c03c461c4cdaf"},
+    {"path": "logs/camo_p15_density_bce_lovasz0.5_p4096_seed123.csv", "sha256": "97f29e658ae2c410f13b56169ab0c74d249152c9b65cf6e0301a4f9ba847be4f"},
+    {"path": "logs/camo_p15_density_bce_p4096_seed2026.csv", "sha256": "4f3733acb3eec2c6394c5bd5a17d9ad12b508952ea892e45f6fb63515e0d9b83"},
+    {"path": "logs/camo_p15_density_bce_lovasz0.5_p4096_seed2026.csv", "sha256": "0865d663bb9bd04dcc864a142c88e672678483152bc9ae0df7f2bed32147a2d8"},
+    {"path": "checkpoints/best_camo_p15_density_bce_p4096_seed42.pth", "sha256": "e9ddaf837fe8e59d83efdb3f6f0a0633956ec22a6427ba463a5a3686c9f3dc15"},
+    {"path": "checkpoints/best_camo_p15_density_bce_lovasz0.5_p4096_seed42.pth", "sha256": "8bb56167680472765cadb540991e0704d51417d383f88f67e5e962f9873ecc45"},
+    {"path": "checkpoints/best_camo_p15_density_bce_p4096_seed123.pth", "sha256": "cb92ed3fa90a5c199b43223e5c9261a0b80990b6e34af7ccf068c596576883a7"},
+    {"path": "checkpoints/best_camo_p15_density_bce_lovasz0.5_p4096_seed123.pth", "sha256": "7e4dc72c60334c1a1968241f139ce184c674deba891b59b48a17f5e186767f2e"},
+    {"path": "checkpoints/best_camo_p15_density_bce_p4096_seed2026.pth", "sha256": "bb528ca739b94eb389579a81fa7356907cb3d86b1e7c09143cc0f10e6d078019"},
+    {"path": "checkpoints/best_camo_p15_density_bce_lovasz0.5_p4096_seed2026.pth", "sha256": "fab6739613f07b960376610a73783f40d34458ca03e27d40cdae885eb98e0fa8"}
+  ]
+}

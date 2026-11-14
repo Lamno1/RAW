@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "stage": "S8",
+  "state": "ARCHITECTURE_PRE_REGISTERED_IMPLEMENTATION_NOT_TRAINING_AUTHORIZATION",
+  "registered_utc": "2026-09-27",
+  "scope": "Prospective end-to-end three-resolution CAMO-Pyramid implementation; does not alter or overwrite frozen S0, S5, S7, or S7 test artifacts.",
+  "hypothesis": "A two-transition 4096->1024->256 measure-aware encoder with sparse row-softmax coarsening, local operators at all resolutions, S7 mass-aware global proxy attention at 256, and transport-plan adjoint decoding is a viable end-to-end pyramid candidate.",
+  "architecture": {
+    "resolutions": [4096, 1024, 256],
+    "widths": [64, 96, 128],
+    "local_blocks_per_level": [2, 2, 2],
+    "coarsening": "frozen S5 row_softmax; sparse fixed support; no dense [N,M] costs",
+    "global_block": "frozen S7 mass-aware MHA at 256 proxies only",
+    "decoder": "weighted adjoint pullback through each exact encoder plan, fused with saved same-level encoder features",
+    "objective_candidate": "BCE_PLUS_0.5_LOVASZ (frozen S2/S7 objective; training not yet authorized)",
+    "normal_policy": "sign-invariant as frozen in S0",
+    "test_policy": "No S8 test split evaluation until architecture and all confirmatory decisions are frozen; S7 test results may not tune S8."
+  },
+  "gates": {
+    "dry_run": ["shape and finite forward", "backward finite gradients", "per-level mass residual <= 1e-6", "weighted-adjoint identity <= 1e-5", "no dense [N,M] or N^2 operation above N=4000", "allocated CUDA memory <= 3200 MiB at the frozen batch/shape"],
+    "pilot": "Requires a separately hashed pilot authorization before training; pilot data are validation only and cannot open test data.",
+    "confirmatory": "Requires a separate pre-registration after pilot; at least three paired seeds for internal gates and five paired seeds for any headline claim, with frozen validation and full-cloud evaluation rules.",
+    "hardware": "If the exact B=8, 4096->1024->256 dry-run exceeds 3200 MiB or produces non-finite values, stop and revise architecture through a new prospective mutation before training."
+  },
+  "non_claims": [
+    "This registration is not evidence that the architecture improves segmentation.",
+    "This registration does not claim SROT; S5 row-softmax is the validated selected coarsening control.",
+    "This registration does not authorize S8 training, confirmatory runs, or any new test-set evaluation."
+  ]
+}

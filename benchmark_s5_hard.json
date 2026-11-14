@@ -1,0 +1,41 @@
+{
+  "device": "cuda",
+  "gpu": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+  "config": {
+    "mode": "hard",
+    "batch_size": 8,
+    "points": 4096,
+    "proxies": 1024,
+    "width": 64,
+    "fine_k": 16,
+    "proxy_k": 16,
+    "support_k": 8,
+    "transport_epsilon": 0.2,
+    "transport_tau": 1.0,
+    "transport_iterations": 100,
+    "steps": 10,
+    "warmup": 4,
+    "max_allocated_mib": 3200.0,
+    "max_latency_ratio": 1.25,
+    "hard_baseline": null,
+    "output": "benchmark_s5_hard.json",
+    "amp_dtype": "bfloat16",
+    "lovasz_weight": 0.5
+  },
+  "topology_seconds_for_one_batch": 1.0164336999878287,
+  "loss": 3.917588472366333,
+  "max_memory_allocated_mib": 949.73828125,
+  "max_memory_reserved_mib": 1118.0,
+  "seconds_per_step": 0.7494331333339991,
+  "latency_ratio_vs_hard": 1.0,
+  "latency_gate_passed": true,
+  "points_per_second": 43723.71402132326,
+  "transport_diagnostics": null,
+  "stress_calculation": {
+    "input_B8_N100k_D9_fp32_mib": 27.4658203125,
+    "forbidden_edge_B8_N100k_k16_D64_fp16_mib": 1562.5,
+    "rule": "100k-point LMAO is forbidden; full-cloud assignment must stream to 4096 points"
+  },
+  "numerical_and_memory_gate_passed": true,
+  "passed": true
+}

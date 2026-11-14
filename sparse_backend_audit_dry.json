@@ -1,0 +1,29 @@
+{
+  "torch": "2.6.0+cu124",
+  "cuda_runtime": "12.4",
+  "device": "cuda",
+  "gpu": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+  "native_scatter_reduce": true,
+  "optional_backends": {
+    "torch_cluster": false,
+    "torch_scatter": false,
+    "pyg_lib": false,
+    "pykeops": false
+  },
+  "ckdtree": {
+    "points": 512,
+    "k": 8,
+    "seconds": 0.012491000001318753
+  },
+  "segmented_reductions": {
+    "edges": 4096,
+    "segments": 512,
+    "channels": 4,
+    "repeats": 2,
+    "seconds": 0.13542589999269694,
+    "checksum": 15997.61113357544
+  },
+  "max_memory_allocated_mib": 0.3984375,
+  "decision": "native_torch_edge_list_backend",
+  "dense_fallback_allowed": false
+}

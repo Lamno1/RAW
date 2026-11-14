@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0",
+  "stage": "S12_test_authorization_after_S7",
+  "created_utc": "2026-09-27T05:28:37Z",
+  "state": "ARCHITECTURE_FROZEN_TEST_AUTHORIZED",
+  "user_authorization": "User authorized opening the test split if all pre-registered S7 promotion gates pass.",
+  "decision_basis": {
+    "s7_paired_summary": "runs/s7_confirmatory/paired_summary.json",
+    "s7_paired_summary_sha256": "145802837e4ec91c01bfa8342d9d43680e3c6865aa69d1029ebc6ddd8ee9ac95",
+    "s7_preregistration": "protocol/mutations/s7_global_proxy_preregistration.json",
+    "s7_preregistration_sha256": "9885cef986d8039863b4b8cdc8ece225ca53c8d8659a055fc9b2760563527064",
+    "pilot_decision": "protocol/mutations/s7_pilot_decision_and_confirmatory_lock.json",
+    "pilot_decision_sha256": "4e6d099f9cb779d86f40b44ed3c255cf3b2c267a9c85070fd8df1cbeeb431add",
+    "test_artifacts_existed_before_authorization": false
+  },
+  "frozen_architecture": {
+    "name": "S7 mass-aware global proxy attention",
+    "scope": "Frozen S5 row-softmax coarsening backbone with mass-aware multi-head global attention over 256 proxies.",
+    "selected_arm": "mass_aware_mha",
+    "control_arm": "identity",
+    "objective": "BCE_PLUS_0.5_LOVASZ",
+    "mass_mode": "density",
+    "confirmatory_seeds": [42, 123, 2026],
+    "checkpoint_rule": "best fixed-crop validation Part-IoU, earliest epoch on ties",
+    "scope_limitation": "This is the tested S7 augmentation of S5; it is not evidence for an unimplemented full three-tier S8 pyramid."
+  },
+  "independent_gate_audit": {
+    "paired_full_cloud_part_iou_delta_mean": 0.031403828410740964,
+    "paired_full_cloud_part_iou_t": 68.52381411008582,
+    "paired_full_cloud_part_iou_p_two_sided": 0.0002129012608654905,
+    "part_iou_gate_threshold": 0.0044353341422272395,
+    "part_iou_gate_passed": true,
+    "paired_accuracy_delta_mean": 0.05317895515207671,
+    "paired_accuracy_t": 24.742678769551723,
+    "paired_accuracy_p_two_sided": 0.0016294613255981665,
+    "accuracy_gate_threshold": -0.0043557722327992885,
+    "accuracy_gate_passed": true,
+    "mid_plus_tail_iou_delta_mean": 0.0430597912021919,
+    "mid_plus_tail_gate_passed": true,
+    "latency_ratio_vs_identity": 1.1218312023310755,
+    "latency_gate_threshold": 1.25,
+    "latency_gate_passed": true,
+    "maximum_training_allocated_memory_mib": 946.453125,
+    "memory_gate_threshold_mib": 3200.0,
+    "memory_gate_passed": true,
+    "all_logged_gradient_norms_finite": true,
+    "all_gates_passed": true,
+    "tail_only_improvement_claimed": false
+  },
+  "frozen_test_protocol": {
+    "split": "test",
+    "one_evaluation_campaign": true,
+    "evaluator": {
+      "path": "evaluate_camo_s7_test_once.py",
+      "sha256": "37df1954db76e004cf74e9c82b270ba47042563acfe9cb4de63cf941f5353ae7"
+    },
+    "implementation_hashes": {
+      "base_full_cloud_evaluator_sha256": "545a873194c50245ff4c41cd1a966ed6e8ba0ad0ad3824cba4663026c57874c5",
+      "s7_model_sha256": "e613fb396ba9abd00442eb5e783c3fc341050180c75a8c34c4eb10b5170a1442",
+      "s7_attention_sha256": "8bf2c61017432bf062b7f18aa0997f728af52cd36a059baeaf1900d225137730",
+      "dataset_sha256": "a27ae423289885c8cdf56b687c7b75af0ef3718d26ac6ef6fda11ee9865ed3d2",
+      "s5_dataset_topology_sha256": "3690ee9b2b6b024f024e1d02a830819cbb22df462ebbe9d459ffac72eaa0f4b5f",
+      "neighbor_graph_sha256": "94ecd6c5b23f81816e9167f26a46dc107593a54086c5e392d9ef49db0e6f19f9"
+    },
+    "models": [
+      {
+        "seed": 42,
+        "checkpoint": "runs/s7_confirmatory/mass_aware_mha_seed42/best.pth",
+        "checkpoint_sha256": "51ba4d594ca78ee91be9b3b0ea576ca66a9bb4048a38c8d7fe8dbd6e3e9472df"
+      },
+      {
+        "seed": 123,
+        "checkpoint": "runs/s7_confirmatory/mass_aware_mha_seed123/best.pth",
+        "checkpoint_sha256": "8213f9f93d843bb24d73f07bce83ad8079d328925b64bad5082be7a87b4c1a7f"
+      },
+      {
+        "seed": 2026,
+        "checkpoint": "runs/s7_confirmatory/mass_aware_mha_seed2026/best.pth",
+      "checkpoint_sha256": "4a01f4d715baf2ebeb11a375f315ebaa9e4476a36daad4b96af95ace4f6933c3"
+      }
+    ],
+    "vote_seeds": [1103, 2207, 3301],
+    "chunk_size": 4096,
+    "fine_k": 16,
+    "proxies": 256,
+    "support_k": 8,
+    "proxy_k": 16,
+    "inference_batch_size": 4,
+    "reported_metrics": ["part_iou", "accuracy", "head_iou", "mid_iou", "tail_iou", "per_class_iou"],
+    "aggregation": "Descriptive mean and sample SD across the three frozen seed checkpoints only; no model selection, threshold tuning, or test-driven changes.",
+    "outputs": [
+      "runs/s7_test/test_full_cloud_seed42.json",
+      "runs/s7_test/test_full_cloud_seed123.json",
+      "runs/s7_test/test_full_cloud_seed2026.json",
+      "runs/s7_test/test_summary.json"
+    ]
+  }
+}

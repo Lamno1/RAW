@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "stage": "S8_SINGLE_SEED_PILOT_FULL_CLOUD_VALIDATION",
+  "state": "LOCKED_BEFORE_FULL_CLOUD_VALIDATION_METRIC_ACCESS",
+  "registered_utc": "2026-09-27",
+  "purpose": "Descriptive full-cloud validation of the already completed five-epoch S8 feasibility pilot. This is not confirmatory evidence and cannot authorize confirmatory training or test evaluation.",
+  "scope": "validation_only",
+  "training_seed": 42,
+  "checkpoint_rule": "Use the pilot best.pth selected by the already locked earliest-best fixed-crop validation Part-IoU rule; do not select another epoch using full-cloud metrics.",
+  "evaluation": {
+    "split": "val",
+    "vote_seeds": [1103, 2207, 3301],
+    "chunk_size": 4096,
+    "fine_k": 16,
+    "topology": "S8 label-free row-softmax 4096->1024->256; support_k=8; kNN levels k0=16,k1=16,k2=12",
+    "inference_batch_size": 1,
+    "precision": "BF16 autocast; topology, mass, and metric accumulation FP32",
+    "coverage": "Every validation point receives exactly one prediction per frozen vote seed; padding is excluded.",
+    "metrics": ["part_iou", "classification_accuracy", "shape_iou", "head_mid_tail_iou"],
+    "checkpoint_comparison_or_selection": false,
+    "test_split_access": false
+  },
+  "interpretation_limits": {
+    "efficacy_claim_authorized": false,
+    "confirmatory_authorized": false,
+    "full_cloud_test_evaluation_authorized": false,
+    "multi_seed_training_authorized": false,
+    "s7_test_metrics_used_for_s8_tuning": false,
+    "decision_after_result": "Any confirmatory S8 work requires a separate post-pilot decision and separately hashed confirmatory preregistration before training. This artifact does not authorize it."
+  },
+  "locked_sha256": {
+    "evaluator": "f99e90bdabf437f11b885eab9e89a2b72d51f2aa369e7b79f4653d03151d83b9",
+    "checkpoint": "a89638620d8b95ea0a158cdf677226083d9f3ff5beecc975701d6e88a9d6af2a",
+    "pilot_authorization": "667505ba1a56c2d87b5c0aee12297afe5a9172ba8081cf34855e6ca9f668579b",
+    "pilot_configuration": "b48730b9a0621c9bf992e07a8cdcc0d0a558c4209effc033696846429028da7a",
+    "s0_protocol": "ba457d194f2665a1dee5997a60371b004c144f89484f67249a4627c3fb03cbe3",
+    "validation_split": "33899f83266122e830e2cb5bae3a0dadb05024b8a837716700ae74b164012835"
+  },
+  "immutable_output": "runs/s8_pilot/mass_aware_mha_seed42/full_cloud_validation.json"
+}

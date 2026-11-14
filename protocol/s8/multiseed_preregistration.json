@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "stage": "S8_MULTI_SEED_INTERNAL_GATE",
+  "state": "FROZEN_BEFORE_MULTI_SEED_DATA_ACCESS",
+  "registered_utc": "2026-09-29",
+  "design_draft": "protocol/s8/multiseed_design_draft.json",
+  "configuration": "protocol/s8/multiseed_configuration.json",
+  "scope": "Three paired seeds for an internal development gate against existing S7 mass-aware MHA validation results; no headline or test claim.",
+  "training": {
+    "seeds": [42, 123, 2026],
+    "epochs": 50,
+    "run_directories": ["runs/s8_multiseed/seed42", "runs/s8_multiseed/seed123", "runs/s8_multiseed/seed2026"],
+    "checkpoint_selection": "Best fixed-crop validation Part-IoU, earliest epoch on exact ties",
+    "resume": "Restore model, optimizer, scheduler, Python/NumPy/CPU/CUDA RNG and DataLoader generator from the last complete epoch"
+  },
+  "evaluation": {
+    "split": "val",
+    "vote_seeds": [1103, 2207, 3301],
+    "chunk_size": 4096,
+    "inference_batch_size": 1,
+    "full_cloud_checkpoint_selection": false,
+    "per_building_confusion_required": true,
+    "test_split_access": false
+  },
+  "internal_promotion_gates": {
+    "mean_paired_full_cloud_part_iou_gain_minimum": 0.004550268811276386,
+    "mean_paired_accuracy_delta_minimum": -0.001,
+    "mean_paired_tail_iou_gain_minimum": 0.001,
+    "maximum_latency_ratio_vs_s7": 1.25,
+    "maximum_allocated_vram_mib": 3200.0,
+    "all_losses_and_gradients_finite": true,
+    "all_three_seeds_required": true,
+    "test_split_access": false
+  },
+  "interpretation": {
+    "three_seed_result": "Internal gate only; no headline architecture claim.",
+    "headline_claim": "Requires a separate prospective decision and at least five paired seeds.",
+    "s7_control_previously_observed": true,
+    "pilot_metric_role": "Feasibility and descriptive only; no pilot result is included as a confirmatory replicate."
+  },
+  "locked_sha256": {
+    "multiseed_configuration": "1ff643a852993506ac6dbc3beed37aeab33c80e153803f4c2910146dde4d94dd",
+    "architecture_preregistration": "d53c3392a11c2bfd55ef64fe13ff57598faa0be426a92eb9d7af4918c90be9ef",
+    "s8_model": "c14412e6c060f3fc873b00b0b0d3200b32b6ceef928d5ed31a0847b0a3cf436b",
+    "s8_dataset": "8c020ab4c561e77d5221682bad95085ca20ec6f561c56da55af0053c59e157d7",
+    "base_dataset": "a27ae423289885c8cdf56b687c7b75af0ef3718d26ac6ef6fda11ee9865ed3d2",
+    "dataset_constants": "1a5ee091afe9549a3d44e4bc04a8e644ac80597c38117cd42a28713138b3b4cc",
+    "coarsening": "d79af86bdb83fa7c5f2290bbd923956135dc5054e05972ae67bce20336531ff8",
+    "operator": "afb0bbdb89862bd8fbefa7d9a83e59f621ed8fafe73536ee37c657a903f5a2b0",
+    "transport": "432cf6323f71b564b4c2c77f251a374f84b075ea9de728679fcb5b7b3452427e",
+    "sparse_ops": "769bbf826d6b32f2e44d2900f5339c3b603f9a2ebabfa59433c2abf3850e892b",
+    "s7_attention": "8bf2c61017432bf062b7f18aa0997f728af52cd36a059baeaf1900d225137730",
+    "losses": "3a61eeacb9bf2bda6fbc66983bcf7e2409aaed63e54715123365194c67a97c4e",
+    "assignment": "851ccae058c9362a8447fcb1198a7bffc35a9120bd705723cb2f97e8efbf55bc",
+    "neighbors": "94ecd6c5b23f81816e9167f26a46dc107593a54086c5e392d9ef49db0e6f19f9",
+    "training_runner": "b28c3e62aba5ec541ab206428e2b790aa27890f5352f61dd8086d07aa960a2d9",
+    "evaluator": "2eb14e1cf0f46145bd1eecffe141ad96376cd7cee0a409b9448dc8562439faef",
+    "metrics_implementation": "7a230fb984c774af1ee396136c365a889bbe1b72443c207f38a9d0ddc7175c4b",
+    "s0_protocol": "ba457d194f2665a1dee5997a60371b004c144f89484f67249a4627c3fb03cbe3",
+    "training_split": "b2095c25464fecec852d20442e67f2bb3fb5e019f69882f96f6b849c75d0181c",
+    "validation_split": "33899f83266122e830e2cb5bae3a0dadb05024b8a837716700ae74b164012835",
+    "s7_paired_validation_summary": "145802837e4ec91c01bfa8342d9d43680e3c6865aa69d1029ebc6ddd8ee9ac95"
+  }
+}

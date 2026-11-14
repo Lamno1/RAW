@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "protocol_version": "camo-pyramid-s0-v1",
+  "stage": "S5",
+  "arm": "row_softmax",
+  "state": "FROZEN_BEFORE_CONFIRMATORY_TRAINING",
+  "created_utc": "2026-09-24T00:00:00+07:00",
+  "decision": "AUTHORIZE_ROW_SOFTMAX_CONFIRMATORY_TRAINING",
+  "evidence": {
+    "gate_artifact": "runs/s5_detached_srot_gate/status.json",
+    "gate_artifact_sha256": "dc40fe0bb00495eb9c7a0a6aca764ad157f64718477624b9f6fd1819e61b298b",
+    "row_softmax_vs_hard_median_ratio": 1.095405183446453,
+    "maximum_ratio": 1.25,
+    "row_softmax_passed": true,
+    "memory_gate_maximum_allocated_mib": 949.73828125,
+    "memory_gate_threshold_mib": 3200.0
+  },
+  "frozen_training": {
+    "seeds": [42, 123, 2026],
+    "points": 4096,
+    "proxies": 1024,
+    "batch_size": 8,
+    "epochs": 50,
+    "precision": "bfloat16",
+    "objective": "BCE_PLUS_0.5_LOVASZ",
+    "mass_mode": "density",
+    "coarsening": "row_softmax",
+    "transport_backend": "reference"
+  },
+  "scope": {
+    "authorizes_srot": false,
+    "changes_srot_v1_failure": false,
+    "changes_s2_objective": false,
+    "test_split_predictions_forbidden": true,
+    "confirmatory_metrics_available_at_freeze": false
+  },
+  "approval_basis": "User explicitly selected the parallel plan: run the already-gated row-softmax confirmatory branch while drafting a non-blocking SROT v2 mutation."
+}

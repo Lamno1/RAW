@@ -1,0 +1,88 @@
+{
+  "schema_version": "1.0",
+  "stage": "S8_PILOT_CONFIGURATION",
+  "state": "LOCKED_CONFIG_AWAITING_RUNNER_HASH_AND_SEPARATE_EXECUTION_AUTHORIZATION",
+  "registered_utc": "2026-09-27",
+  "purpose": "One feasibility pilot to validate data topology, training loop, validation metrics, resumability, and hardware stability. It is not a confirmatory efficacy experiment and cannot authorize confirmatory runs by itself.",
+  "architecture": {
+    "class": "camo_build.pyramid_s8.CAMOPyramidS8",
+    "resolutions": [4096, 1024, 256],
+    "widths": [64, 96, 128],
+    "local_blocks_per_level": [2, 2, 2],
+    "coarsening": "row_softmax at both sparse levels",
+    "global_block": "mass-aware MHA at 256 proxies",
+    "decoder": "weighted-adjoint pullback through both transport plans"
+  },
+  "training": {
+    "seed": 42,
+    "epochs": 5,
+    "batch_size": 8,
+    "points": 4096,
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "gradient_clip_norm": 1.0,
+    "precision": "CUDA BF16 autocast; mass/transport/reductions/loss sorting FP32",
+    "objective": "BCE_PLUS_0.5_LOVASZ",
+    "scheduler": "CosineAnnealingLR over 5 pilot epochs, eta_min=1e-6",
+    "checkpoint_selection": "best sampled/fixed-crop validation Part-IoU; earliest epoch on ties"
+  },
+  "data_and_leakage": {
+    "training_split": "train",
+    "evaluation_split": "val",
+    "test_split_access": false,
+    "s7_test_metrics_may_inform_s8": false,
+    "label_free_topology": true,
+    "full_building_normalization_before_sampling": true
+  },
+  "hard_gates": {
+    "allocated_vram_max_mib": 3200.0,
+    "finite_loss_every_step": true,
+    "finite_gradient_every_optimizer_step": true,
+    "per_level_relative_mass_residual_max": 1e-6,
+    "per_level_adjoint_relative_error_max": 1e-5,
+    "resume_must_restore_model_optimizer_scheduler_rng_sampler_epoch": true,
+    "validation_metric": "full_cloud_validation_part_iou is primary development metric; fixed-crop Part-IoU is checkpoint selector",
+    "pilot_is_not_confirmatory": true
+  },
+  "decision_policy": {
+    "pilot_failure": "Stop; retain the failure artifacts and do not launch confirmatory training.",
+    "pilot_pass": "Only establishes feasibility. A separately hashed post-pilot decision and confirmatory preregistration are required before multi-seed training.",
+    "test_set": "No S8 test evaluation is authorized by this configuration."
+  },
+  "locked_dependencies": {
+    "architecture_preregistration": {
+      "path": "protocol/s0/mutations/s8_architecture_preregistration.json",
+      "sha256": "d53c3392a11c2bfd55ef64fe13ff57598faa0be426a92eb9d7af4918c90be9ef"
+    },
+    "s8_model": {
+      "path": "camo_build/pyramid_s8.py",
+      "sha256": "c14412e6c060f3fc873b00b0b0d3200b32b6ceef928d5ed31a0847b0a3cf436b"
+    },
+    "dry_run_runner": {
+      "path": "benchmark_s8_dry_run.py",
+      "sha256": "f3a84198ca1a954b6ff3aa9cce737d3020756484d16b644839a47004a2ddcaf5"
+    },
+    "s8_dataset": {
+      "path": "camo_s8_dataset.py",
+      "sha256": "8c020ab4c561e77d5221682bad95085ca20ec6f561c56da55af0053c59e157d7"
+    },
+    "dry_run_result": {
+      "path": "runs/s8_dry_run/benchmark.json",
+      "sha256": "e31a6cb23446172444a150443857f74bc8f06b50ff4c21d4435a8c33f07b18e5"
+    },
+    "s2_objective": {
+      "path": "protocol/s0/s2_objective_decision.json",
+      "sha256": "e50336337973b53ad27775392fa5fe134630abcfdf9dcdf9318d7b195959a2a5"
+    },
+    "s0_protocol": {
+      "path": "protocol/s0/camo_pyramid_protocol.json",
+      "sha256": "ba457d194f2665a1dee5997a60371b004c144f89484f67249a4627c3fb03cbe3"
+    }
+  },
+  "runner": {
+    "path": "train_camo_s8.py",
+    "sha256": "1910862edf26954794f7d01ea9086450c52f14f2b2190da7436a84b669b95c81",
+    "execution_authorization": "requires protocol/s8/pilot_authorization.json to pass hash and state checks before dataset construction"
+  }
+}

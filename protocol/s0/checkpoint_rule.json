@@ -1,0 +1,7 @@
+{
+  "mode": "max",
+  "selection_metric": "fixed_crop_validation_part_iou",
+  "selection_split": "validation",
+  "test_selection_forbidden": true,
+  "tie_break": "earliest_epoch"
+}

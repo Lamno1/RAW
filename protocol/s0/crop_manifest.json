@@ -1,0 +1,9 @@
+{
+  "coverage": "each vote permutes the full cloud and chunks it without omission",
+  "padding": "last chunk repeats points but padded logits are excluded from accumulation",
+  "seeds": [
+    1103,
+    2207,
+    3301
+  ]
+}

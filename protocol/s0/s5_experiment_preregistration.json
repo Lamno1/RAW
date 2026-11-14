@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0",
+  "protocol_version": "camo-pyramid-s0-v1",
+  "stage": "S5",
+  "state": "FROZEN_BEFORE_ANY_S5_METRIC",
+  "created_utc": "2026-09-24T00:00:00+07:00",
+  "scientific_question": "Does a detached semi-relaxed transport partition improve geometric or boundary representation beyond both hard weighted-FPS/voxel pooling and ordinary same-support row-softmax pooling?",
+  "locked_dependencies": {
+    "objective_artifact": "protocol/s0/s2_objective_decision.json",
+    "objective_sha256": "e50336337973b53ad27775392fa5fe134630abcfdf9dcdf9318d7b195959a2a5",
+    "accuracy_guardrail_artifact": "protocol/s0/s5_accuracy_guardrail.json",
+    "accuracy_guardrail_sha256": "001cac09c86f68fd5bf3a62384336da1f2ce5002776c5c8cadfb477591766b35",
+    "delta_arch": 0.0044353341422272395
+  },
+  "arms": {
+    "hard": "same weighted-FPS/voxel anchors; one spatial-nearest proxy per source; P_ij=m_i*1[j=a(i)]",
+    "row_softmax": "same anchors, sparse support and geometry cost as SROT; exact hard source marginal; tau=0",
+    "srot": "same anchors, sparse support and geometry cost; exact hard source marginal; tau=1 target-capacity KL"
+  },
+  "held_fixed": [
+    "sampled points and paired seed",
+    "weighted-FPS/voxel anchors",
+    "source-to-proxy sparse support",
+    "geometry cost for row_softmax and SROT",
+    "one fine and one proxy LMAO block",
+    "proxy count",
+    "conventional nearest-barycentric-proxy decoder",
+    "skip fusion and segmentation head",
+    "BCE_PLUS_0.5_LOVASZ objective",
+    "optimizer, schedule, epochs, crop protocol and checkpoint rule"
+  ],
+  "configuration": {
+    "seeds": [42, 123, 2026],
+    "points": 4096,
+    "proxies": 1024,
+    "fine_knn": 16,
+    "proxy_knn": 16,
+    "support_k": 8,
+    "width": 64,
+    "batch_size": 8,
+    "epochs": 50,
+    "amp_dtype": "bfloat16",
+    "transport_epsilon": 0.2,
+    "transport_tau": 1.0,
+    "transport_max_iterations": 100,
+    "transport_tolerance": 1e-5,
+    "normal_cost": "1-abs(n_i^T n_j)",
+    "plan_gradient": "detached"
+  },
+  "representation_metrics": {
+    "normalized_symmetric_chamfer": "Using CPU cKDTree only at evaluation: mean_i min_j ||x_i-x'_j||^2 plus mean_j min_i ||x'_j-x_i||^2, divided by squared source bounding-box diagonal; lower is better.",
+    "transport_normal_distortion": "sum_(i,j) P_ij*(1-abs(n_i^T n'_j))/sum_(i,j)P_ij; lower is better.",
+    "oracle_boundary_accuracy": "A valid source is boundary iff at least one valid fine-kNN neighbor has a different class. Proxy class is argmax_c sum_i P_ij*1[y_i=c]. Decode by the frozen nearest-barycentric-proxy map and score only boundary sources; higher is better.",
+    "tail_oracle_recall": "Macro recall of the same evaluation-only oracle decoder over the 11 frozen S0 tail classes; higher is better.",
+    "proxy_mass_cv": "std(m'_j)/mean(m'_j), reported as a diagnostic only and forbidden as the sole S5 pass metric.",
+    "labels_policy": "Labels enter only after the detached plan and proxy geometry are complete; they cannot affect anchors, support, cost or transport."
+  },
+  "representation_pass_rule": {
+    "comparison": "SROT must beat both hard and row_softmax in paired mean",
+    "any_one_required": [
+      "normalized_symmetric_chamfer relative reduction >= 0.01",
+      "transport_normal_distortion relative reduction >= 0.01",
+      "oracle_boundary_accuracy absolute gain >= 0.002",
+      "tail_oracle_recall absolute gain >= 0.002"
+    ],
+    "proxy_mass_cv_can_qualify_alone": false
+  },
+  "learned_metric_gates": {
+    "srot_vs_best_coarsening_control_part_iou": "mean paired delta >= -0.001",
+    "srot_vs_locked_s2_accuracy": "mean paired delta >= -0.0043557722327992885",
+    "headline_srot_vs_best_control_part_iou": "mean paired delta >= 0.0044353341422272395",
+    "maximum_latency_ratio_vs_hard": 1.25,
+    "maximum_allocated_vram_mib": 3200.0
+  },
+  "go_no_go": {
+    "enable_differentiable_transport": "only if the detached SROT representation pass rule and learned noninferiority gates pass",
+    "failure_action": "retain the strongest hard or row-softmax coarsener and do not implement differentiable Sinkhorn"
+  },
+  "anti_leakage": {
+    "frozen_before_any_s5_training_metric": true,
+    "test_split_predictions_forbidden": true,
+    "maximum_single_seed_exploratory_configs": 8
+  }
+}

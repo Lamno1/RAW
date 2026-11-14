@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "mutation_type": "prospective_component_experiment",
+  "stage": "S7",
+  "created_utc": "2026-09-26T00:00:00+07:00",
+  "state": "FROZEN_BEFORE_ANY_S7_METRIC",
+  "scientific_question": "Does global context at 256 proxies improve the frozen row-softmax CAMO representation, and does adding the target measure to attention improve beyond ordinary MHA?",
+  "mathematical_specification": "plans/S7_GLOBAL_PROXY_REVIEW.md",
+  "arms": ["identity", "unweighted_mha", "mass_aware_mha"],
+  "configuration": {
+    "points": 4096,
+    "proxies": 256,
+    "fine_knn": 16,
+    "proxy_knn": 16,
+    "support_k": 8,
+    "width": 64,
+    "attention_heads": 4,
+    "attention_blocks": 1,
+    "geometry_bias": "SO(2)_z invariant, normal-sign-invariant",
+    "coarsening": "row_softmax",
+    "transport_epsilon": 0.2,
+    "objective": "BCE_PLUS_0.5_LOVASZ",
+    "batch_size": 8,
+    "amp_dtype": "bfloat16",
+    "pilot_seed": 42,
+    "pilot_epochs": 5,
+    "confirmatory_seeds": [42, 123, 2026],
+    "confirmatory_epochs": 50,
+    "evaluation_split": "validation",
+    "test_split_predictions": false
+  },
+  "pilot_selection_rule": {
+    "metric": "fixed_crop_validation_part_iou",
+    "candidate": "arm with highest best validation Part-IoU",
+    "tie_tolerance": 0.0001,
+    "tie_order": ["identity", "unweighted_mha", "mass_aware_mha"],
+    "confirmatory_authorized_only_if": "unweighted_mha or mass_aware_mha wins"
+  },
+  "confirmatory_gates": {
+    "mean_paired_part_iou_gain_minimum": 0.0044353341422272395,
+    "mean_paired_accuracy_delta_minimum": -0.0043557722327992885,
+    "maximum_latency_ratio_vs_identity": 1.25,
+    "maximum_allocated_vram_mib": 3200.0,
+    "head_only_gain_rejected": true,
+    "finite_gradient_required": true
+  },
+  "locked_dependencies": {
+    "s2_objective_decision": "protocol/s0/s2_objective_decision.json",
+    "s2_objective_sha256": "e50336337973b53ad27775392fa5fe134630abcfdf9dcdf9318d7b195959a2a5",
+    "s5_headline_result": "protocol/s0/s5_headline_result.json",
+    "s5_headline_sha256": "71c9503d1031521bf122e055e2698182127f76ca88a9f9bec99d12870d9866f7",
+    "s5_accuracy_guardrail": "protocol/s0/s5_accuracy_guardrail.json",
+    "s5_accuracy_guardrail_sha256": "001cac09c86f68fd5bf3a62384336da1f2ce5002776c5c8cadfb477591766b35"
+  },
+  "anti_leakage": {
+    "frozen_before_any_s7_metric": true,
+    "test_set_predictions_forbidden": true,
+    "s5_result_not_reinterpreted": true,
+    "maximum_exploratory_arms": 3
+  },
+  "rollback": "Retain frozen S5 row-softmax and omit global attention if S7 fails any promotion gate."
+}

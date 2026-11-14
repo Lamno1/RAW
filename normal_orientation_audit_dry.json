@@ -1,0 +1,43 @@
+{
+  "split": "train",
+  "models_audited": 5,
+  "signed_normal_equations_allowed": false,
+  "fallback_if_false": "use_abs_dot_and_abs_nz_consistently",
+  "records": [
+    {
+      "model": "COMMERCIALcastle_mesh0365",
+      "finite_fraction": 1.0,
+      "unit_length_mean_error": 3.4588576447447394e-09,
+      "negative_neighbor_fraction": 0.1156375,
+      "signed_safe": false
+    },
+    {
+      "model": "COMMERCIALcastle_mesh0904",
+      "finite_fraction": 1.0,
+      "unit_length_mean_error": 4.47571268935576e-09,
+      "negative_neighbor_fraction": 0.10213625,
+      "signed_safe": false
+    },
+    {
+      "model": "COMMERCIALcastle_mesh2985",
+      "finite_fraction": 1.0,
+      "unit_length_mean_error": 8.56518744818402e-10,
+      "negative_neighbor_fraction": 0.12249,
+      "signed_safe": false
+    },
+    {
+      "model": "COMMERCIALchurch_mesh3158",
+      "finite_fraction": 1.0,
+      "unit_length_mean_error": 3.930330283452577e-09,
+      "negative_neighbor_fraction": 0.0656875,
+      "signed_safe": true
+    },
+    {
+      "model": "COMMERCIALcity_hall_mesh0258",
+      "finite_fraction": 1.0,
+      "unit_length_mean_error": 6.854534162492598e-10,
+      "negative_neighbor_fraction": 0.1636325,
+      "signed_safe": false
+    }
+  ]
+}

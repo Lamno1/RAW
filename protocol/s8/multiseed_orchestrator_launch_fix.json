@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "stage": "S8_MULTI_SEED_INTERNAL_GATE",
+  "recorded_utc": "2026-09-29",
+  "scope": "Operational orchestration only; no change to the frozen training runner, evaluator, model, data, metric, configuration or preregistration.",
+  "first_attempt": {
+    "phase": "training",
+    "seed": 42,
+    "status": "FAILED_TO_LAUNCH",
+    "error": "Windows PowerShell 5 Start-Process raised ArgumentException because inherited environment contains both Path and PATH keys.",
+    "error_log": "runs/s8_multiseed/orchestration/training_seed42.launch_error.log",
+    "error_log_sha256": "284cc8dc4fd25999ae7d7d4e99b956206f7c2a8b14048d0422b42ed64723b216",
+    "python_runner_started": false,
+    "train_or_validation_data_accessed": false,
+    "seed42_run_directory_created": false
+  },
+  "operational_change": {
+    "wrapper": "run_s8_multiseed.ps1",
+    "old_sha256": "25396b892de66ba120f600799c883894028039f1832046a8e4de862a2ae44805",
+    "new_sha256": "e6219c0da6055031884ac27b78f22687066bdf6fdbf577cc3581aaa5031fe908",
+    "detail": "Invoke Python directly from the hidden PowerShell orchestrator, capture its exit code, and preserve the failed launch logs under their original names."
+  },
+  "frozen_preregistration_sha256": "7e999f925afe5250b3b0c4b5d00cc4bbfa5b769fde2c81c425c791602c781d56",
+  "authorization_sha256": "c14099617184900439cf711553bd43395db678d7e5188dd3224a8f38de7e6f54",
+  "retry_allowed": true
+}

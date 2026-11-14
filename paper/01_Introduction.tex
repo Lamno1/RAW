@@ -1,0 +1,13 @@
+\section{Introduction}
+\label{sec:introduction}
+
+The preservation and automated semantic analysis of architectural heritage have emerged as critical endeavors in civil engineering, computer vision, and computational architecture \cite{buildingnet2021}. Modern photogrammetry and terrestrial laser scanning (TLS) routinely acquire point clouds consisting of millions of spatial coordinates representing intricate historical facades, arches, and domes. However, translating this raw geometric data into semantic building categories remains computationally prohibitive for on-site edge devices and lightweight hardware configurations commonly accessible to academic researchers.
+
+Traditional deep learning approaches on point sets, exemplified by voxel-based methods or dense 3D convolutional networks, scale poorly in terms of spatial memory complexity $\mathcal{O}(V^3)$. While recent Transformer architectures provide unprecedented capability to capture long-range contextual dependencies across points, standard Self-Attention mechanisms introduce substantial memory footprints and high quadratic complexity $\mathcal{O}(N^2)$. On hardware with modest memory constraints, such as standard 4GB VRAM mobile GPUs, multi-head attention implementations frequently induce Out-Of-Memory (OOM) failures or necessitate extreme batch size throttling.
+
+To resolve this limitation, this paper introduces an edge-optimized Point Cloud Transformer (PCT) framework specifically customized for the complex geometries of the BuildingNet dataset. Our main contributions are summarized as follows:
+\begin{enumerate}
+    \item We design a compact 2-layer Offset-Attention architecture with a latent dimension of $d_{model} = 128$, achieving competitive classification accuracy across 53 architectural categories while confining active GPU memory usage to under 540 MB.
+    \item We demonstrate that the differential formulation of Offset-Attention preserves sharp geometric edges and fine architectural contours (e.g., spires, pediments, arches) without incurring the computational overhead of deep hierarchical multi-head attention stacks.
+    \item We integrate a Class-Balanced Focal Loss to mitigate the severe category imbalance inherent in historical architectural inventories, ensuring fair discriminative learning for minority building typologies.
+\end{enumerate}

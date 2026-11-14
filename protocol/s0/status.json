@@ -1,0 +1,11 @@
+{
+  "delta_arch": 0.0044353341422272395,
+  "delta_arch_calibration": "FROZEN",
+  "protocol_version": "camo-pyramid-s0-v1",
+  "s2_objective": "BCE_PLUS_0.5_LOVASZ",
+  "s2_objective_decision": "FROZEN",
+  "s5_accuracy_guardrail": "FROZEN",
+  "s5_maximum_mean_accuracy_drop": 0.0043557722327992885,
+  "stage": "S0",
+  "state": "FROZEN"
+}

@@ -1,0 +1,50 @@
+\documentclass[a4paper,fleqn]{cas-dc}
+
+\usepackage[numbers]{natbib}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{subcaption}
+\usepackage{hyperref}
+
+\begin{document}
+\let\WriteBookmarks\relax
+\def\floatpagepagefraction{1}
+\def\textpagefraction{.001}
+
+% Tiêu đề bài báo
+\title [mode = title]{Lightweight Point Cloud Transformer with Offset-Attention for Architectural 3D Heritage Classification on Edge Devices}
+
+% Tác giả
+\author[1]{First Author}[type=editor, auid=000, bioid=1, prefix=Mr., role=Researcher]
+\cormark[1]
+\ead{author@ueh.edu.vn}
+
+\address[1]{University of Economics Ho Chi Minh City (UEH), 59C Nguyen Dinh Chieu, Vo Thi Sau Ward, District 3, Ho Chi Minh City, Vietnam}
+
+\cortext[cor1]{Corresponding author}
+
+% Tóm tắt (Abstract)
+\begin{abstract}
+Classifying complex 3D architectural heritage structures from high-density point clouds typically demands massive computational resources, hindering deployment on edge devices and standard research workstations. In this study, we propose a resource-efficient Point Cloud Transformer (PCT) framework tailored for large-scale architectural classification on the BuildingNet benchmark. By synergizing differential Offset-Attention with a compact latent dimension ($d_{model} = 128$) and Class-Balanced Focal Loss, our architecture maintains sharp high-frequency geometric boundaries while consuming less than 540 MB of VRAM during execution on an NVIDIA RTX 3050 Ti laptop GPU. Experimental validations demonstrate robust convergence across 53 distinct building typologies, achieving high Macro-AUC with a lightweight parameter footprint suitable for real-time digital heritage preservation and edge building information modeling (BIM).
+\end{abstract}
+
+% Từ khóa (Keywords)
+\begin{keywords}
+Point Cloud Transformer \sep Architectural Heritage \sep Offset-Attention \sep BuildingNet \sep Edge Computing \sep Building Information Modeling (BIM)
+\end{keywords}
+
+\maketitle
+
+% Nhúng các chương độc lập
+\input{01_Introduction}
+\input{02_Related_Work}
+\input{03_Methodology}
+\input{04_Experiments}
+\input{05_Conclusion}
+
+% Tài liệu tham khảo
+\bibliographystyle{elsarticle-num}
+\bibliography{references}
+
+\end{document}

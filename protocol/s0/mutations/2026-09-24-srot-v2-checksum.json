@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "protocol_version": "camo-pyramid-s0-v1",
+  "mutation_id": "S5-SROT-LATENCY-ABSOLUTE-BUDGET-V2",
+  "date": "2026-09-24",
+  "affected_file": "plans/CAMO_PYRAMID_BLUEPRINT.md",
+  "old_sha256": "62bcad1ecea637b0d1f17ef0b59aa76e28905fa6b8aecca56a875077e3c48218",
+  "new_sha256": "66f2927f6f16b007c493742eacb38f70e3496130688c6726c634c647e2d85f02",
+  "reason": "Append the user-authorized prospective SROT v2 mutation required by blueprint section 17.",
+  "scientific_effect": "No v1 threshold, equation, result, split, objective, or failed artifact is changed. SROT v2 remains ineligible for training until its new prospective gates pass.",
+  "verification": "verify_protocol(root, protocol/s0) must return passed=true before any confirmatory launcher starts."
+}

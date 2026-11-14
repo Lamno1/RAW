@@ -1,0 +1,54 @@
+{
+  "method": "paired_interleaved_full_forward_backward_optimizer_wall_time",
+  "candidate": "srot",
+  "config": {
+    "candidate": "srot",
+    "batch_size": 8,
+    "points": 4096,
+    "proxies": 1024,
+    "width": 64,
+    "fine_k": 16,
+    "proxy_k": 16,
+    "support_k": 8,
+    "transport_iterations": 100,
+    "warmup_pairs": 2,
+    "measured_pairs": 8,
+    "maximum_ratio": 1.25,
+    "output": "benchmark_s5_paired_srot_relax18.json"
+  },
+  "hard_seconds": [
+    0.3073516000295058,
+    0.28272269997978583,
+    0.287207999965176,
+    0.3167626000358723,
+    0.307556800020393,
+    0.28562300000339746,
+    0.29505900002550334,
+    0.2954694000072777
+  ],
+  "candidate_seconds": [
+    0.5299382000230253,
+    0.5352988999802619,
+    0.5404066999908537,
+    0.534526499977801,
+    0.5352035000105388,
+    0.5410023999866098,
+    0.5570289000170305,
+    0.5313199000083841
+  ],
+  "paired_ratios": [
+    1.724208365832978,
+    1.8933707835222813,
+    1.8815865158922387,
+    1.6874672070417014,
+    1.7401777491996646,
+    1.8941135692159756,
+    1.8878559880189518,
+    1.7982230985519894
+  ],
+  "hard_median_seconds": 0.29526420001639053,
+  "candidate_median_seconds": 0.5352511999954004,
+  "median_paired_latency_ratio": 1.839904807222114,
+  "maximum_ratio": 1.25,
+  "passed": false
+}

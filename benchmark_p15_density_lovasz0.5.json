@@ -1,0 +1,22 @@
+{
+  "device": "cuda",
+  "gpu": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+  "config": {
+    "batch_size": 8,
+    "points": 4096,
+    "width": 64,
+    "k": 16,
+    "steps": 10,
+    "warmup": 4,
+    "mass_mode": "density",
+    "max_allocated_mib": 3200.0,
+    "lovasz_weight": 0.5,
+    "output": "benchmark_p15_density_lovasz0.5.json"
+  },
+  "debug_loss": 3.9571709632873535,
+  "loss": 3.91935658454895,
+  "max_memory_allocated_mib": 1369.693359375,
+  "max_memory_reserved_mib": 1488.0,
+  "points_per_second": 267040.19988603704,
+  "seconds_per_step": 0.12270811665803194
+}

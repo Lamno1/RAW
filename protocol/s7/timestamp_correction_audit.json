@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "stage": "S7",
+  "created_utc": "2026-09-26T06:30:23Z",
+  "purpose": "Append-only correction of inaccurate embedded creation timestamps; no scientific design, thresholds, data, or results changed.",
+  "preregistration": {
+    "path": "protocol/mutations/s7_global_proxy_preregistration.json",
+    "sha256": "9885cef986d8039863b4b8cdc8ece225ca53c8d8659a055fc9b2760563527064",
+    "embedded_created_utc_was_inaccurate": "2026-09-26T00:00:00Z",
+    "filesystem_creation_utc": "2026-09-25T17:40:21Z",
+    "filesystem_last_write_utc": "2026-09-25T17:40:21Z",
+    "action": "Preserved byte-for-byte to avoid breaking downstream preregistration hash references."
+  },
+  "ordering_evidence": [
+    {
+      "artifact": "runs/s7_dry_run/benchmark.json",
+      "filesystem_creation_utc": "2026-09-25T17:45:21Z",
+      "relation": "Created after preregistration."
+    },
+    {
+      "artifact": "protocol/s7/dry_run_authorization.json",
+      "sha256": "b8bb407e6dd5fc684202920619952c9e4624991bbd710d4f74631748b65b1e16",
+      "filesystem_creation_utc": "2026-09-25T17:46:48Z",
+      "relation": "Created after dry-run benchmark and before pilot completion."
+    },
+    {
+      "artifact": "runs/s7_pilot_identity_seed42/status.json",
+      "finished_utc": "2026-09-25T17:59:26.957731Z"
+    },
+    {
+      "artifact": "runs/s7_pilot_unweighted_seed42/status.json",
+      "finished_utc": "2026-09-25T18:12:52.804309Z"
+    },
+    {
+      "artifact": "runs/s7_pilot_mass_aware_seed42/status.json",
+      "finished_utc": "2026-09-25T18:25:58.972223Z"
+    }
+  ],
+  "corrected_artifacts": {
+    "decision": {
+      "path": "protocol/mutations/s7_pilot_decision_and_confirmatory_lock.json",
+      "created_utc": "2026-09-26T06:30:23Z",
+      "sha256": "4e6d099f9cb779d86f40b44ed3c255cf3b2c267a9c85070fd8df1cbeeb431add",
+      "note": "Prior embedded timestamp incorrectly represented pilot completion rather than decision-artifact creation. Pilot values and selection rule are unchanged."
+    },
+    "confirmatory_authorization": {
+      "path": "protocol/s7/confirmatory_authorization.json",
+      "created_utc": "2026-09-26T06:30:23Z",
+      "sha256": "3552bfd5858e00b2a61a3b9a43433f04fb7995b846a7b7fe6b5c160a60d48059",
+      "decision_artifact_sha256_updated": true
+    }
+  },
+  "confirmatory_metrics_inspected_before_authorization": false,
+  "test_split_used": false
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "created_utc": "2026-09-27T05:28:37Z",
+  "stage": "S12_test_authorization_preflight",
+  "correction_type": "checkpoint_hash_typo",
+  "affected_authorization": "protocol/s7/s7_architecture_freeze_test_authorization.json",
+  "affected_checkpoint": "runs/s7_confirmatory/mass_aware_mha_seed2026/best.pth",
+  "initially_recorded_sha256": "4a01f4d715baf2ebeb11a375f315eba9e4476a36daad4b96af95ace4f6933c3",
+  "verified_sha256": "4a01f4d715baf2ebeb11a375f315ebaa9e4476a36daad4b96af95ace4f6933c3",
+  "cause": "Manual transcription omitted one repeated hexadecimal 'a'; the evaluator preflight detected the mismatch before constructing any test-split dataset.",
+  "test_dataset_constructed": false,
+  "test_predictions_or_metrics_created": false,
+  "correction_scope": "Authorization hash only; checkpoint, validation results, architecture, and promotion rules are unchanged."
+}

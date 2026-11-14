@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0",
+  "protocol_version": "camo-pyramid-srot-v2",
+  "mutation_id": "S5-SROT-LATENCY-ABSOLUTE-BUDGET-V2",
+  "state": "FROZEN_BEFORE_ANY_V2_TRAINING_METRIC",
+  "created_utc": "2026-09-24T00:00:00+07:00",
+  "approval": {
+    "status": "USER_AUTHORIZED_PARALLEL_V2_BRANCH",
+    "scope": "pre-register a prospective SROT v2 hardware gate while row-softmax S5 runs independently"
+  },
+  "non_retroactivity": {
+    "v1_protocol_unchanged": true,
+    "v1_latency_threshold_unchanged": 1.25,
+    "v1_negative_result_remains_final": true,
+    "v1_failed_artifacts_must_not_be_rewritten": true,
+    "v2_does_not_authorize_training_until_all_v2_hardware_gates_pass": true
+  },
+  "motivation": {
+    "v1_gate_artifact": "runs/s5_detached_srot_gate/status.json",
+    "v1_gate_artifact_sha256": "dc40fe0bb00495eb9c7a0a6aca764ad157f64718477624b9f6fd1819e61b298b",
+    "optimization_audit": "S5_OPTIMIZATION_AUDIT.md",
+    "optimization_audit_sha256": "c0992ee604a3b948afa57d1c514b1702e4100ba942cf58544db8e282a70d9f7d",
+    "observed_v1_reference_ratio": 2.4370117488952197,
+    "observed_v1_triton_ratio": 3.282872348633844,
+    "interpretation": "The relative 1.25x gate answers whether SROT is nearly cost-free versus hard pooling. V2 asks the distinct prospective systems question of whether SROT fits the independently specified 4GB and 72-hour deployment budget.",
+    "forbidden_use": "Observed v1 treatment latency may motivate the new question but may not calibrate the v2 threshold."
+  },
+  "frozen_configuration": {
+    "batch_size": 8,
+    "points_per_sample": 4096,
+    "proxies": 1024,
+    "support_k": 8,
+    "precision": "bfloat16 activations with FP32 transport reductions",
+    "transport_epsilon": 0.2,
+    "transport_tau": 1.0,
+    "transport_max_iterations": 100,
+    "transport_tolerance": 1e-5,
+    "plan_gradient": "detached",
+    "device_class": "NVIDIA RTX 3050 Ti Laptop GPU 4GB",
+    "paired_interleaving": true,
+    "timed_repetitions": 8,
+    "warmup_repetitions": 3
+  },
+  "v2_hardware_gates": {
+    "minimum_end_to_end_model_step_throughput_points_per_second": 50000.0,
+    "equivalent_maximum_median_step_latency_seconds": 0.65536,
+    "throughput_derivation": "8*4096 source points / 50000 points per second; the 50000 target predates S5 and was the original CAMO hardware throughput requirement.",
+    "maximum_allocated_vram_mib": 3200.0,
+    "maximum_projected_three_seed_wall_hours": 216.0,
+    "projection_rule": "Use measured median dataloader-inclusive epoch wall time after one warmup epoch, multiplied by 50 epochs and 3 seeds.",
+    "relative_latency_vs_hard": "report as a diagnostic; no longer a v2 hard gate",
+    "transport_only_latency": "report median and dispersion as a diagnostic; never substitute it for end-to-end model-step latency"
+  },
+  "unchanged_mathematical_gates": {
+    "maximum_relative_source_mass_residual": 1e-6,
+    "maximum_transport_tolerance": 1e-5,
+    "constant_pushforward": "must pass",
+    "adjoint_identity": "must pass",
+    "inactive_proxy_rejection": "must pass",
+    "nonpositive_source_mass_rejection": "must pass",
+    "fp32_final_row_correction": "required"
+  },
+  "decision_rule": {
+    "hardware_pass": "All v2 hardware gates and unchanged mathematical gates pass in one immutable benchmark artifact.",
+    "if_pass": "SROT v2 becomes eligible for an exploratory representation-only study; confirmatory segmentation still requires a separately frozen comparison plan.",
+    "if_fail": "Keep SROT excluded from the main architecture and retain the negative systems result.",
+    "row_softmax_independence": "This mutation cannot block, alter, or reinterpret the already-authorized S5 row-softmax confirmatory arm."
+  },
+  "forbidden_shortcuts": [
+    "changing the 1e-5 tolerance or 100-iteration cap after timing",
+    "excluding topology, pushforward, decoder, backward, or optimizer work from the end-to-end model-step gate",
+    "using repeated identical geometry as a warm-start benchmark",
+    "changing batch size, point count, proxy count, support degree, or precision after inspecting v2 timing",
+    "rewriting or deleting any v1 negative artifact"
+  ]
+}

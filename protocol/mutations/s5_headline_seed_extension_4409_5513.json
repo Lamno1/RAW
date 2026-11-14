@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "mutation_type": "confirmatory_seed_extension",
+  "created_utc": "2026-09-25T00:00:00+07:00",
+  "state": "FROZEN_BEFORE_ADDITIONAL_TRAINING",
+  "decision": "AUTHORIZE_TWO_ADDITIONAL_PAIRED_SEEDS",
+  "new_training_seeds": [4409, 5513],
+  "existing_training_seeds": [42, 123, 2026],
+  "resulting_headline_seed_count": 5,
+  "scope": {
+    "architecture": "S5 row_softmax versus locked S2 CAMO Prototype 1",
+    "objective": "BCE_PLUS_0.5_LOVASZ",
+    "mass_mode": "density",
+    "points": 4096,
+    "proxies": 1024,
+    "fine_knn": 16,
+    "proxy_knn": 16,
+    "support_k": 8,
+    "width": 64,
+    "batch_size": 8,
+    "epochs": 50,
+    "amp_dtype": "bfloat16",
+    "coarsening": "row_softmax",
+    "transport_backend": "reference",
+    "checkpoint_selection": "fixed_crop_validation_part_iou",
+    "full_cloud_vote_seeds": [1103, 2207, 3301],
+    "evaluation_split": "validation",
+    "test_split_predictions": false
+  },
+  "held_fixed_hashes": {
+    "camo_pyramid_protocol": "ba457d194f2665a1dee5997a60371b004c144f89484f67249a4627c3fb03cbe3",
+    "s2_objective_decision": "e50336337973b53ad27775392fa5fe134630abcfdf9dcdf9318d7b195959a2a5",
+    "s5_accuracy_guardrail": "001cac09c86f68fd5bf3a62384336da1f2ce5002776c5c8cadfb477591766b35",
+    "s5_row_softmax_authorization": "ba9485588fa17289a5e00574533dc0443b82040544e37d014c2fbcc6e87d15ed"
+  },
+  "anti_leakage": {
+    "created_before_additional_training_metrics": true,
+    "seed_choice_not_calibrated_from_additional_results": true,
+    "no_threshold_change": true,
+    "no_objective_change": true,
+    "no_architecture_change": true
+  },
+  "rationale": "Complete the S0 headline minimum of five paired seeds without altering the frozen treatment, control, metrics, or gates."
+}

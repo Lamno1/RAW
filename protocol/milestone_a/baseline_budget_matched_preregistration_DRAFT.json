@@ -1,0 +1,135 @@
+{
+  "schema_version": "1.0",
+  "stage": "MILESTONE_A_BUDGET_MATCHED_BASELINE",
+  "state": "DRAFT_NOT_FROZEN",
+  "drafted_utc": "2026-09-30",
+  "freeze_requirements": [
+    "Every null value in locked_sha256 and baseline_source must be filled with a real hash or commit before any training or validation access.",
+    "After filling them, change state to FROZEN_BEFORE_MILESTONE_A_DATA_ACCESS and record the SHA-256 of this file in the authorization record.",
+    "No decision threshold in this file may change after freeze."
+  ],
+  "purpose": "Measure how a published point-cloud segmentation architecture, reduced to the same 4 GB budget and trained and evaluated under the same protocol as S7, compares with S7 on full-cloud validation. The outcome decides whether S7 has a defensible position at this budget. It is not a reproduction of any published number and does not authorize test-split access.",
+  "decision_question": "At matched budget, split, crop, seeds, epochs and evaluator, is the baseline's mean paired full-cloud validation Part IoU higher than, comparable to, or lower than S7's?",
+  "baselines": {
+    "primary": {
+      "name": "PointNeXt-S reduced to budget",
+      "published_reference_not_comparable": "Test PartIoU 29.56 and ShapeIoU 21.76 from the BuildingNet challenge report (arXiv 2306.10146, Table 8). That run used 40,000-point samples and 100 epochs; it is a public reference only and must not be placed in the same column as this measurement.",
+      "allowed_reductions": [
+        "Input points per crop fixed at 4096 to match S7.",
+        "Batch size reduced from 8 by halving until the memory gate passes; the final value is recorded.",
+        "Channel width reduced only if batch size 1 still exceeds the memory gate; any reduction is recorded and flagged."
+      ],
+      "reductions_that_void_the_comparison": "Any change to the architecture family beyond the listed reductions, or fewer than 4096 input points, changes the result to a self-modified baseline and must be reported as such."
+    },
+    "secondary_floor": {
+      "name": "PointNet++ (same budget)",
+      "role": "Lower reference only. Not used in the decision rule."
+    },
+    "fallback_if_primary_infeasible": "PTv3 at the smallest official configuration, under the same allowed reductions. If it also fails, the stage ends with outcome INFEASIBLE_AT_BUDGET."
+  },
+  "matching_conditions": {
+    "dataset_split": "protocol/s0/split_manifest.json; 1481 train, 187 validation, 181 test buildings.",
+    "crop_manifest": "protocol/s0/crop_manifest.json",
+    "points_per_crop": 4096,
+    "input_features": "normalized XYZ, unit normals, RGB, identical to S7",
+    "full_building_normalization": "cached before sampling, identical to S7",
+    "point_masses": "The baseline receives no mass input unless its architecture has a native per-point weight input; none is planned.",
+    "objective": "BalancedCEWithLovasz with lovasz_weight 0.5 and the same train-count class weights as S7.",
+    "optimizer_and_schedule": "AdamW, weight decay 1e-4, cosine annealing to 1e-6, BF16 autocast, identical to S7 except the learning rate described below.",
+    "epochs": 50,
+    "training_seeds": [42, 123, 2026],
+    "checkpoint_selection": "Best fixed-crop validation Part IoU, earliest epoch on exact ties, identical to S7.",
+    "class_handling": "Raw label 0 ignored by loss and metrics; 31 classes; identical to S7."
+  },
+  "hyperparameter_allowance": {
+    "rationale": "S7's objective and learning rate were chosen in earlier stages. To avoid an under-tuned baseline, the baseline receives one small pre-declared search, and only one.",
+    "search_seed": 42,
+    "search_epochs": 5,
+    "learning_rates": [0.001, 0.003],
+    "selection_metric": "Fixed-crop validation Part IoU at epoch 5",
+    "selection_rule": "Higher value wins; tie goes to 0.001.",
+    "after_selection": "The chosen learning rate is used unchanged for all three confirmatory seeds. The search run for seed 42 is not counted as a confirmatory replicate.",
+    "no_further_tuning": true
+  },
+  "evaluation": {
+    "split": "val",
+    "protocol": "Same full-cloud evaluator logic as S7: padded, permuted 4096-point chunks, three votes.",
+    "vote_seeds": [1103, 2207, 3301],
+    "chunk_size": 4096,
+    "inference_batch_size": 4,
+    "full_cloud_checkpoint_selection": false,
+    "per_building_confusion_required": true,
+    "metrics": ["part_iou", "shape_iou", "accuracy", "head_iou", "mid_iou", "tail_iou"],
+    "metrics_implementation": "Same implementation file and hash as the S7 validation evaluations.",
+    "efficiency_metrics": ["parameter_count", "max_allocated_vram_mib_train", "max_reserved_vram_mib_train", "median_train_step_seconds", "full_cloud_validation_elapsed_seconds"],
+    "test_split_access": false
+  },
+  "s7_reference": {
+    "source": "runs/s7_confirmatory/paired_summary.json",
+    "arm": "mass_aware_mha",
+    "seeds": [42, 123, 2026],
+    "validation_part_iou_mean": 0.18495633717876805,
+    "validation_part_iou_per_seed": [0.1865254378504837, 0.1859965276122347, 0.1823470460735858],
+    "note": "S7 values are used as recorded. They are not re-run. Comparison uses seed-matched paired deltas."
+  },
+  "memory_gate": {
+    "maximum_allocated_vram_mib": 3200.0,
+    "reserved_memory_reported_not_gated": true,
+    "on_failure": "Apply the allowed reductions in order. If the gate still fails at batch size 1 and the smallest allowed width, record INFEASIBLE_AT_BUDGET for that baseline."
+  },
+  "decision_rule": {
+    "statistic": "Mean over the three seeds of (baseline full-cloud validation Part IoU minus S7 full-cloud validation Part IoU), seed-matched.",
+    "minimum_effect": 0.0044353341422272395,
+    "minimum_effect_source": "Existing protocol minimum Part-IoU effect used in the S5 headline criterion and the S7 gate.",
+    "outcomes": {
+      "BASELINE_SUPERIOR": "Mean paired difference >= +minimum_effect. S7 has no defensible accuracy position at this budget. Recommended project action: stop the Q1-directed line and report a negative result.",
+      "COMPARABLE": "Mean paired difference strictly between -minimum_effect and +minimum_effect. S7 cannot claim an accuracy advantage; any claim must rest on efficiency (memory, latency, parameters) and be stated as such.",
+      "S7_SUPERIOR": "Mean paired difference <= -minimum_effect. S7 retains a measured advantage at this budget; the five-seed and mass-attribution work may be considered.",
+      "INFEASIBLE_AT_BUDGET": "The baseline cannot run within the memory gate after the allowed reductions. Record the evidence. No accuracy comparison is made, and the stage cannot support or refute S7's position."
+    },
+    "all_three_seeds_required": true,
+    "secondary_reporting": "Shape IoU, accuracy, head/mid/tail IoU and the efficiency metrics are reported descriptively. They do not alter the outcome.",
+    "statistical_caution": "Three seed pairs. A paired t-test may be reported as supporting evidence only. No headline claim is authorized."
+  },
+  "budget_and_stop_rules": {
+    "maximum_wall_clock_days": 3,
+    "maximum_full_training_runs": 6,
+    "maximum_search_runs": 2,
+    "maximum_dependency_installation_attempts": 3,
+    "on_budget_exhausted": "Stop, report what completed, and set the outcome to INCOMPLETE. Do not extend without a new written authorization.",
+    "on_dependency_failure": "After three documented failed installation or build attempts, try the fallback baseline once. If it also fails, record INFEASIBLE_AT_BUDGET.",
+    "abort_on_nonfinite_loss_or_gradient": true,
+    "thermal_or_power_interruption": "Resume from the last complete epoch checkpoint with full RNG restoration, as in the S8 runner."
+  },
+  "interpretation_limits": {
+    "not_a_reproduction_of_published_results": true,
+    "self_modified_baseline_must_be_labelled": true,
+    "baseline_receives_no_density_mass": true,
+    "validation_set_reuse": "The same 187 validation buildings were used for S7 development. The comparison is a development-set comparison, not an out-of-sample estimate.",
+    "no_test_split_access": true,
+    "no_headline_claim": true,
+    "published_numbers_never_merged_with_local_measurements": true
+  },
+  "consequence_for_project_rules": {
+    "stop_rule_clause_b": "Clause (b), baseline at matched budget not below S7, is satisfied by BASELINE_SUPERIOR and, at the user's discretion, by COMPARABLE. INFEASIBLE_AT_BUDGET and INCOMPLETE leave clause (b) unresolved."
+  },
+  "baseline_source": {
+    "repository": null,
+    "commit": null,
+    "license": null,
+    "config_file": null
+  },
+  "locked_sha256": {
+    "baseline_model_source": null,
+    "baseline_config": null,
+    "baseline_training_runner": null,
+    "baseline_evaluator_adapter": null,
+    "environment_lockfile": null,
+    "s7_paired_validation_summary": "145802837e4ec91c01bfa8342d9d43680e3c6865aa69d1029ebc6ddd8ee9ac95",
+    "s0_protocol": "ba457d194f2665a1dee5997a60371b004c144f89484f67249a4627c3fb03cbe3",
+    "validation_split": "33899f83266122e830e2cb5bae3a0dadb05024b8a837716700ae74b164012835",
+    "training_split": "b2095c25464fecec852d20442e67f2bb3fb5e019f69882f96f6b849c75d0181c",
+    "metrics_implementation": "7a230fb984c774af1ee396136c365a889bbe1b72443c207f38a9d0ddc7175c4b",
+    "losses": "3a61eeacb9bf2bda6fbc66983bcf7e2409aaed63e54715123365194c67a97c4e"
+  }
+}

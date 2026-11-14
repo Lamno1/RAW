@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "stage": "S7",
+  "created_utc": "2026-09-27T03:10:13Z",
+  "change_type": "evaluation_artifact_serialization_fix",
+  "trigger": {
+    "command_phase": "full_cloud_dry_run",
+    "split": "validation",
+    "models_evaluated": 1,
+    "failure": "json.dumps(..., allow_nan=False) raised ValueError because per-class IoU is undefined (NaN) for classes absent from the single dry-run building."
+  },
+  "before": {
+    "evaluator": "evaluate_camo_s7_full_cloud.py",
+    "sha256": "463a1251d9931d0a5e2f43c03e41336243e7c6c06d6f0524691d03aa00391aa3"
+  },
+  "after": {
+    "evaluator": "evaluate_camo_s7_full_cloud.py",
+    "sha256": "4aae74fe6e773dcf07ea9f934e4f7c3985fb773c2c093a230fed0cc4257ab201",
+    "regression_test": "tests/test_s7_full_cloud_evaluator.py",
+    "regression_test_sha256": "9bf45876142d85bd920732a8145c41a1880d87779e01415610a480b777d3c9ef",
+    "dry_run_artifact": "runs/s7_confirmatory/dry_run_full_cloud_identity_seed42.json",
+    "dry_run_artifact_sha256": "0119212d1594de4e0b6de6307f7ee5aab479f4cf4e7f46a61239e78b781a41eb"
+  },
+  "semantic_contract": {
+    "finite_metrics_unchanged": true,
+    "undefined_nonfinite_metrics_serialized_as_json_null": true,
+    "absent_class_iou_remains_undefined_and_is_not_imputed": true,
+    "model_weights_or_predictions_changed": false,
+    "promotion_thresholds_changed": false
+  },
+  "validation": {
+    "dry_run_strict_json_parse_passed": true,
+    "dry_run_split": "validation",
+    "dry_run_used_test_split": false,
+    "full_pytest": "45 passed, 1 benign Triton CUDA-discovery warning",
+    "full_cloud_confirmatory_started_before_fix": false
+  },
+  "authorization": {
+    "prior_user_instruction": "Run full-cloud validation after all confirmatory arms; test evaluation only if every pre-registered S7 promotion gate passes.",
+    "test_split_used": false
+  }
+}

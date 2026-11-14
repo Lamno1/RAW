@@ -1,0 +1,35 @@
+# Copied from guochengqian/PointNeXt cfgs/s3dis/pointnext-s.yaml (model block only).
+# Deviations recorded in the preregistration: num_classes 31; in_channels 6 (normals + RGB).
+model:
+  NAME: BaseSeg
+  encoder_args:
+    NAME: PointNextEncoder
+    blocks: [1, 1, 1, 1, 1]
+    strides: [1, 4, 4, 4, 4]
+    sa_layers: 2
+    sa_use_res: True
+    width: 32
+    in_channels: 6
+    expansion: 4
+    radius: 0.1
+    nsample: 32
+    aggr_args:
+      feature_type: 'dp_fj'
+      reduction: 'max'
+    group_args:
+      NAME: 'ballquery'
+      normalize_dp: True
+    conv_args:
+      order: conv-norm-act
+    act_args:
+      act: 'relu'
+    norm_args:
+      norm: 'bn'
+  decoder_args:
+    NAME: PointNextDecoder
+  cls_args:
+    NAME: SegHead
+    num_classes: 31
+    in_channels: null
+    norm_args:
+      norm: 'bn'

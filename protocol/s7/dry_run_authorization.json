@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "stage": "S7",
+  "decision": "AUTHORIZE_PILOT",
+  "created_utc": "2026-09-26T00:46:10+07:00",
+  "s7_preregistration_sha256": "9885cef986d8039863b4b8cdc8ece225ca53c8d8659a055fc9b2760563527064",
+  "benchmark": {
+    "path": "runs/s7_dry_run/benchmark.json",
+    "sha256": "5785f2ce4f2d77f097fa238b5260bb2ce012b05207067be356abe10eb27f9b32"
+  },
+  "arm_status_sha256": {
+    "identity": "b5b4f90a084496553adca347ad2c3637c6c47c164a0208808dd93d15b838dad8",
+    "unweighted_mha": "b238dfb6bc0992c94fd5958191d52de7f4430641b0c6c5499fddd97e9849a0ad",
+    "mass_aware_mha": "1c4b112da1dcedab2f2e93761f3a5d206d20119a316e5fa15404ebe62393f236"
+  },
+  "gates": {
+    "finite_gradients_all_arms": true,
+    "mass_residual_max": 1.1920928955078125e-7,
+    "memory_allocated_max_mib": 950.1650390625,
+    "unweighted_latency_ratio": 1.0882786043174526,
+    "mass_aware_latency_ratio": 1.1218312023310755,
+    "maximum_memory_mib": 3200.0,
+    "maximum_latency_ratio": 1.25,
+    "all_passed": true
+  },
+  "pilot": {
+    "seed": 42,
+    "epochs": 5,
+    "arms": ["identity", "unweighted_mha", "mass_aware_mha"],
+    "test_split_predictions": false
+  }
+}

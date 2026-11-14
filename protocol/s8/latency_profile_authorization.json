@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "stage": "S7_S8_LATENCY_DECOMPOSITION",
+  "state": "AUTHORIZED_BY_USER_DIRECTION_BEFORE_DATA_ACCESS",
+  "created_utc": "2026-09-30",
+  "authorization_basis": "User explicitly corrected that Codex is responsible for writing and running the next measurement after agreeing it requires separate preregistration.",
+  "preregistration": "protocol/s8/latency_profile_preregistration.json",
+  "preregistration_sha256": "526e977678c63e0c21f9dd3c6969f392cd2aa3104595ddc4102744f38c0b905d",
+  "allowed_split": "val",
+  "test_split_access": false,
+  "segmentation_metric_or_promotion_retest_authorized": false,
+  "immutable_output": "runs/s8_latency_profile/latency_profile.json"
+}

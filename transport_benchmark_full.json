@@ -1,0 +1,54 @@
+{
+  "device": "cuda",
+  "gpu": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+  "full_assignment": {
+    "shape": "100000->4096",
+    "anchor_seconds": 0.9788027000031434,
+    "assignment_seconds": 0.0560144999762997,
+    "edges": 200000,
+    "relative_mass_residual": 7.812499092096914e-08,
+    "constant_error": 1.1920928955078125e-07
+  },
+  "srot_levels": [
+    {
+      "shape": "8x4096->8x1024",
+      "edges": 262144,
+      "seconds": 0.46725069999229163,
+      "constant_error": 2.384185791015625e-07,
+      "diagnostics": {
+        "iterations": 66,
+        "converged": true,
+        "absolute_mass_residual": 0.0,
+        "relative_mass_residual": 0.0,
+        "max_relative_row_residual": 2.384185791015625e-07,
+        "target_kl": 1462.827392578125,
+        "entropy": 17155.384765625,
+        "objective": 53752.6015625,
+        "max_log_scaling_change": 8.106231689453125e-06
+      }
+    },
+    {
+      "shape": "8x1024->8x256",
+      "edges": 65536,
+      "seconds": 0.323408099997323,
+      "constant_error": 2.384185791015625e-07,
+      "diagnostics": {
+        "iterations": 66,
+        "converged": true,
+        "absolute_mass_residual": 0.0,
+        "relative_mass_residual": 0.0,
+        "max_relative_row_residual": 2.384185791015625e-07,
+        "target_kl": 409.59979248046875,
+        "entropy": 4187.36669921875,
+        "objective": 12876.220703125,
+        "max_log_scaling_change": 8.106231689453125e-06
+      }
+    }
+  ],
+  "max_memory_allocated_mib": 15.43798828125,
+  "max_memory_reserved_mib": 34.0,
+  "forbidden_100k_edge_tensor_fp16_mib": 1562.5,
+  "hardware_passed": true,
+  "mathematical_passed": true,
+  "passed": true
+}

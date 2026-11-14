@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "stage": "S8_PILOT_RESULT",
+  "state": "PILOT_COMPLETE_FEASIBILITY_ONLY",
+  "completed_utc": "2026-09-27T07:50:05.806340+00:00",
+  "authorization": {
+    "path": "protocol/s8/pilot_authorization.json",
+    "sha256": "667505ba1a56c2d87b5c0aee12297afe5a9172ba8081cf34855e6ca9f668579b"
+  },
+  "configuration": {
+    "path": "protocol/s8/pilot_configuration.json",
+    "sha256": "b48730b9a0621c9bf992e07a8cdcc0d0a558c4209effc033696846429028da7a"
+  },
+  "run": "runs/s8_pilot/mass_aware_mha_seed42",
+  "run_state": "PILOT_COMPLETE",
+  "test_split_used": false,
+  "confirmatory_authorized": false,
+  "full_cloud_evaluation_performed": false,
+  "selected_best_epoch": 5,
+  "metrics": {
+    "epoch": [1, 2, 3, 4, 5],
+    "train_gradient_norm": [1.5361584886427848, 2.3409738662422344, 2.6601702026141587, 2.6891040641774415, 2.8088103321290787],
+    "validation_fixed_crop_part_iou": [0.039136592906931965, 0.05446301473846211, 0.07168087606548319, 0.09019970123006753, 0.09072902593988283],
+    "validation_accuracy": [0.46397437211043246, 0.4978995418512888, 0.529765028887834, 0.5535757973690428, 0.5483628136311265],
+    "validation_head_iou": [0.12132343801148907, 0.16883534568923256, 0.21826579889342074, 0.2597237517843532, 0.26021924159774573],
+    "validation_mid_iou": [0.0, 0.0, 0.003944916909577186, 0.019895322028856167, 0.02104073881589106],
+    "validation_tail_iou": [0.0, 0.0, 0.0, 0.0, 0.0]
+  },
+  "hardware": {
+    "gpu": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+    "amp_dtype": "bfloat16",
+    "max_memory_allocated_mib": 1591.5615234375,
+    "max_memory_reserved_mib": 1746.0,
+    "allocation_limit_mib": 3200.0,
+    "hardware_gate_passed": true
+  },
+  "integrity": {
+    "metrics_csv_sha256": "2fdf7a8616ede75d6bdf7f577ed471f294e4992245d9d2973cd7cd0bbba5191f",
+    "best_checkpoint_sha256": "a89638620d8b95ea0a158cdf677226083d9f3ff5beecc975701d6e88a9d6af2a",
+    "last_checkpoint_sha256": "f98de643cdde1ccb9420120ba990a9b221ed74cefb086637bf8a2584d7af476f",
+    "executed_source_manifest_sha256": "035de6f70fcf9254fb54bc780dbadd9606308d874e3de8485b835678f980c58c",
+    "provenance_correction": "runs/s8_pilot/mass_aware_mha_seed42/source_manifest_correction.json",
+    "post_run_unit_tests": "49 passed",
+    "s0_verify_protocol": "passed",
+    "finite_metrics_and_grad_norms": true
+  },
+  "interpretation": {
+    "feasibility": "The one-seed five-epoch pilot completed with finite losses/gradients and below-budget allocated VRAM.",
+    "efficacy": "Not evaluated; these exploratory single-seed fixed-crop values are not confirmatory and have no comparative significance.",
+    "long_tail": "Tail IoU remained zero throughout this short pilot; no tail benefit is claimed.",
+    "next_gate": "A separately hashed post-pilot decision and confirmatory preregistration are required before any multi-seed S8 training."
+  }
+}

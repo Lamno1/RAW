@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "stage": "S8_MULTI_SEED_INTERNAL_GATE",
+  "state": "AUTHORIZED_AFTER_INDEPENDENT_AUDIT",
+  "created_utc": "2026-09-29",
+  "authorization_basis": "The user assigned execution responsibility to the runner. This record remains inactive until independent review of the runner, evaluator, preregistration and hashes.",
+  "preregistration": "protocol/s8/multiseed_preregistration.json",
+  "preregistration_sha256": "7e999f925afe5250b3b0c4b5d00cc4bbfa5b769fde2c81c425c791602c781d56",
+  "seeds": [42, 123, 2026],
+  "epochs": 50,
+  "allowed_splits": ["train", "val"],
+  "test_split_access": false,
+  "full_cloud_test_evaluation_authorized": false,
+  "headline_claim_authorized": false,
+  "execution_started": false,
+  "activation_condition": "Independent audit confirms the frozen preregistration and both runners; only then change state to AUTHORIZED_AFTER_INDEPENDENT_AUDIT before any train/val data access."
+}
